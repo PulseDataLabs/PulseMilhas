@@ -1,0 +1,41 @@
+{
+  "timestamp": "2026-06-07T21:01:11.046102",
+  "summary": {
+    "total_programas": 1,
+    "media_geral": 0,
+    "menor_valor": {
+      "programa": "",
+      "valor": 0
+    },
+    "maior_valor": {
+      "programa": "",
+      "valor": 0
+    }
+  },
+  "latest": {
+    "Smiles": {
+      "valor_milhar": 0.0,
+      "data_captura": "2026-06-07",
+      "categoria": "aereo",
+      "descricao": "Indisponível"
+    }
+  },
+  "by_category": {
+    "aereo": {
+      "label": "Programas Aéreos",
+      "color": "#00d4ff",
+      "programs": [
+        {
+          "nome": "Smiles",
+          "valor_milhar": 0.0,
+          "data_captura": "2026-06-07",
+          "descricao": "Indisponível"
+        }
+      ]
+    }
+  },
+  "history": {
+    "Smiles": []
+  },
+  "records_total": 1
+}

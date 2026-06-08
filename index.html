@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PulseMilhas — Monitor de Valor do Milhar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <link rel="preload" href="./data/dashboard.json" as="fetch" crossorigin />
+  <link rel="preload" href="./data/pipeline_status.json" as="fetch" crossorigin />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #080c10;
+      --bg2:       #0d1218;
+      --bg3:       #111820;
+      --surface:   #141c26;
+      --border:    #1e2d3d;
+      --border2:   #243444;
+      --accent:    #00d4ff;
+      --accent2:   #0095c8;
+      --gold:      #f0b429;
+      --gold2:     #c8902a;
+      --green:     #00e5a0;
+      --red:       #ff4d6d;
+      --text:      #e8eef4;
+      --text2:     #8fa3b8;
+      --text3:     #6a8096;
+      --font-head: 'Syne', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.6;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 3rem;
+      background: rgba(8,12,16,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .nav-logo .pulse-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.4; transform: scale(0.7); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: var(--text2);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+    .nav-cta {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--bg);
+      background: var(--accent);
+      padding: 0.5rem 1.2rem;
+      border-radius: 4px;
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .nav-cta:hover { background: #33ddff; transform: translateY(-1px); }
+
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8rem 2rem 6rem;
+      overflow: hidden;
+    }
+
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+    }
+    .hero-orb-1 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(0,212,255,0.12), transparent 70%);
+      top: -100px; left: -150px;
+      animation: drift1 12s ease-in-out infinite alternate;
+    }
+    .hero-orb-2 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(240,180,41,0.08), transparent 70%);
+      bottom: -80px; right: -100px;
+      animation: drift2 15s ease-in-out infinite alternate;
+    }
+    .hero-orb-3 {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(0,229,160,0.06), transparent 70%);
+      top: 40%; left: 55%;
+      animation: drift3 10s ease-in-out infinite alternate;
+    }
+
+    @keyframes drift1 { from { transform: translate(0,0); } to { transform: translate(60px, 40px); } }
+    @keyframes drift2 { from { transform: translate(0,0); } to { transform: translate(-40px, -60px); } }
+    @keyframes drift3 { from { transform: translate(0,0); } to { transform: translate(30px, -30px); } }
+
+    .ticker-bar {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text3);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .ticker-bar::before, .ticker-bar::after {
+      content: '';
+      width: 40px; height: 1px;
+      background: var(--border2);
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse-dot 1.5s ease-in-out infinite;
+      margin-right: 0.3rem;
+    }
+
+    .hero-title {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: clamp(3.5rem, 9vw, 7.5rem);
+      line-height: 0.92;
+      letter-spacing: -0.04em;
+      margin-bottom: 0.4rem;
+      animation: fadeUp 0.8s ease 0.1s both;
+    }
+
+    .hero-title .line-accent {
+      color: transparent;
+      -webkit-text-stroke: 1.5px var(--accent);
+      display: block;
+    }
+
+    .hero-title .line-solid {
+      color: var(--text);
+      display: block;
+    }
+
+    .hero-subtitle {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+      display: block;
+      animation: fadeUp 0.8s ease 0.2s both;
+    }
+
+    .hero-description {
+      max-width: 580px;
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: var(--text2);
+      margin-bottom: 3rem;
+      animation: fadeUp 0.8s ease 0.3s both;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeUp 0.8s ease 0.4s both;
+    }
+
+    .btn-primary {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--accent);
+      padding: 0.9rem 2rem;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 0 30px rgba(0,212,255,0.2);
+    }
+
+    .btn-primary:hover {
+      background: #33ddff;
+      transform: translateY(-2px);
+      box-shadow: 0 0 50px rgba(0,212,255,0.35);
+    }
+
+    .btn-secondary {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text2);
+      background: transparent;
+      padding: 0.9rem 2rem;
+      border-radius: 4px;
+      border: 1px solid var(--border2);
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s, transform 0.15s;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .hero-stats {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      gap: 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg2);
+      overflow: hidden;
+      animation: fadeUp 0.8s ease 0.5s both;
+    }
+
+    .stat-item {
+      flex: 1;
+      padding: 1.5rem 2rem;
+      border-right: 1px solid var(--border);
+      text-align: center;
+      position: relative;
+    }
+
+    .stat-item:last-child { border-right: none; }
+
+    .stat-item::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .stat-item:hover::before { opacity: 1; }
+
+    .stat-value {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 1.8rem;
+      color: var(--text);
+      display: block;
+      letter-spacing: -0.03em;
+    }
+
+    .stat-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 0.3rem;
+      display: block;
+    }
+
+    section { position: relative; z-index: 1; }
+
+    .container {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .section-title {
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+
+    .section-desc {
+      color: var(--text2);
+      font-size: 1rem;
+      line-height: 1.75;
+      max-width: 560px;
+    }
+
+    .datasets-section {
+      padding: 8rem 0;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .datasets-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .datasets-filter {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 2.5rem;
+      justify-content: center;
+    }
+
+    .filter-btn {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      color: var(--text2);
+      padding: 0.6rem 1.2rem;
+      border-radius: 30px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      user-select: none;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--border2);
+      color: var(--text);
+      transform: translateY(-2px);
+    }
+
+    .filter-btn.active {
+      background: rgba(0, 212, 255, 0.1);
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: 0 0 15px rgba(0, 212, 255, 0.15);
+    }
+
+    .filter-btn.active[data-category="aereo"] {
+      background: rgba(0, 212, 255, 0.1);
+      border-color: #00d4ff;
+      color: #00d4ff;
+    }
+
+    .filter-btn.active[data-category="banco"] {
+      background: rgba(0, 229, 160, 0.1);
+      border-color: #00e5a0;
+      color: #00e5a0;
+    }
+
+    .filter-btn.active[data-category="marketplace"] {
+      background: rgba(240, 180, 41, 0.1);
+      border-color: #f0b429;
+      color: #f0b429;
+    }
+
+    .program-card.filtered-out {
+      display: none !important;
+    }
+
+    .programs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .program-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: all 0.25s;
+    }
+
+    .program-card:hover {
+      background: var(--bg3);
+      border-color: var(--border2);
+      transform: translateY(-2px);
+    }
+
+    .program-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .program-name {
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .program-category-badge {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .badge-aereo { background: rgba(0,212,255,0.1); color: #00d4ff; border: 1px solid rgba(0,212,255,0.2); }
+    .badge-banco { background: rgba(0,229,160,0.1); color: #00e5a0; border: 1px solid rgba(0,229,160,0.2); }
+    .badge-marketplace { background: rgba(240,180,41,0.1); color: #f0b429; border: 1px solid rgba(240,180,41,0.2); }
+
+    .program-value {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 2.2rem;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.25rem;
+    }
+
+    .program-value .currency {
+      font-size: 0.9rem;
+      color: var(--text3);
+      font-weight: 400;
+    }
+
+    .program-value .unit {
+      font-size: 0.7rem;
+      color: var(--text3);
+      font-weight: 400;
+    }
+
+    .program-desc {
+      font-size: 0.85rem;
+      color: var(--text2);
+      line-height: 1.5;
+      margin-bottom: 1rem;
+    }
+
+    .program-date {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text3);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .program-date::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 6px var(--accent);
+      display: inline-block;
+    }
+
+    .chart-section {
+      padding: 8rem 0;
+    }
+
+    .chart-wrapper {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-top: 2rem;
+    }
+
+    .chart-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .chart-btn {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      padding: 0.4rem 0.9rem;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      color: var(--text2);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .chart-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .chart-btn.active {
+      background: rgba(0,212,255,0.1);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 3rem 0;
+      background: var(--bg);
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .footer-logo {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text3);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--accent); }
+
+    .footer-copy {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text3);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero-stats { flex-wrap: wrap; }
+      .stat-item { min-width: 50%; border-right: none; border-bottom: 1px solid var(--border); }
+      .programs-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .hero-title { font-size: 3rem; }
+      .container { padding: 0 1.25rem; }
+      .hero { padding: 7rem 1.25rem 4rem; }
+      .stat-item { min-width: 100%; }
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, var(--bg3) 25%, var(--surface) 50%, var(--bg3) 75%);
+      background-size: 800px 100%;
+      animation: shimmer 1.5s ease-in-out infinite;
+      border-radius: 6px;
+      height: 120px;
+      margin-bottom: 1rem;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -400px 0; }
+      100% { background-position: 400px 0; }
+    }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 3rem;
+      color: var(--text3);
+    }
+
+    .alert-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      background: var(--surface);
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .alert-card p {
+      color: var(--text2);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">
+    <span class="pulse-dot"></span>
+    PulseMilhas
+  </a>
+  <ul class="nav-links">
+    <li><a href="#programas">Programas</a></li>
+    <li><a href="#historico">Histórico</a></li>
+    <li><a href="#sobre">Sobre</a></li>
+  </ul>
+  <a href="https://github.com/PulseDataLabs/PulseMilhas" class="nav-cta" target="_blank">GitHub ↗</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-orb hero-orb-3"></div>
+
+  <div class="ticker-bar">
+    <span class="status-dot"></span>
+    Monitor automático de milhas · Seg–Sex
+  </div>
+
+  <h1 class="hero-title">
+    <span class="line-solid">Pulse</span>
+    <span class="line-accent">Milhas</span>
+  </h1>
+
+  <span class="hero-subtitle">Quanto vale 1.000 milhas hoje?</span>
+
+  <p class="hero-description">
+    Acompanhe em tempo real o valor do milhar (R$ por 1.000 milhas) nos
+    principais programas de fidelidade, bancos e marketplaces do Brasil.
+    Dados atualizados diariamente, 100% gratuitos e open-source.
+  </p>
+
+  <div class="hero-ctas">
+    <a href="#programas" class="btn-primary">Ver cotações</a>
+    <a href="#historico" class="btn-secondary">Histórico</a>
+  </div>
+</section>
+
+<div class="hero-stats reveal" id="stats-container">
+  <div class="stat-item">
+    <span class="stat-value" id="stat-programs">—</span>
+    <span class="stat-label">Programas monitorados</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-value" id="stat-avg">—</span>
+    <span class="stat-label">Média geral (milhar)</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-value" id="stat-best">—</span>
+    <span class="stat-label">Melhor valor (milhar)</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-value" id="stat-worst">—</span>
+    <span class="stat-label">Menor valor (milhar)</span>
+  </div>
+</div>
+
+<section class="datasets-section" id="programas">
+  <div class="container">
+    <div class="datasets-header reveal">
+      <div>
+        <div class="section-label">Cotações</div>
+        <h2 class="section-title">Valor do Milhar por Programa</h2>
+        <p class="section-desc">Quanto custa 1.000 milhas em cada programa hoje.</p>
+      </div>
+    </div>
+
+    <div class="datasets-filter reveal">
+      <button class="filter-btn active" data-category="all">📊 Todos</button>
+      <button class="filter-btn" data-category="aereo">✈️ Aéreos</button>
+      <button class="filter-btn" data-category="banco">🏦 Bancos</button>
+      <button class="filter-btn" data-category="marketplace">🛒 Marketplaces</button>
+    </div>
+
+    <div class="programs-grid reveal" id="programs-grid">
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
+    </div>
+  </div>
+</section>
+
+<section class="chart-section" id="historico">
+  <div class="container">
+    <div class="section-label reveal">Histórico</div>
+    <h2 class="section-title reveal">Evolução do valor do milhar</h2>
+    <p class="section-desc reveal">Selecione um programa abaixo para ver o histórico de cotações.</p>
+
+    <div class="chart-wrapper reveal">
+      <div class="chart-controls" id="chart-controls"></div>
+      <canvas id="historyChart" height="300"></canvas>
+    </div>
+  </div>
+</section>
+
+<section class="datasets-section" id="sobre">
+  <div class="container">
+    <div class="section-label reveal">Sobre</div>
+    <h2 class="section-title reveal">PulseMilhas</h2>
+    <p class="section-desc reveal" style="max-width: 100%;">
+      O PulseMilhas é um projeto open-source da <strong style="color: var(--accent);">PulseDataLabs</strong>
+      que monitora automaticamente o valor do milhar nos principais programas de fidelidade,
+      bancos e marketplaces do Brasil. Os dados são coletados via scripts Python, versionados
+      em CSV e disponibilizados em um dashboard estático — sem backend, sem banco de dados,
+      100% gratuito.
+    </p>
+    <div class="alert-card reveal">
+      <p>
+        📊 Quer sugerir um novo programa ou marketplace para monitorarmos?
+        <br>
+        <a href="https://github.com/PulseDataLabs/PulseMilhas/issues" target="_blank" style="color: var(--accent);">Abra uma issue no GitHub</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="pulse-dot"></span>
+        PulseMilhas
+      </div>
+      <ul class="footer-links">
+        <li><a href="https://github.com/PulseDataLabs/PulseMilhas" target="_blank">GitHub</a></li>
+        <li><a href="https://github.com/PulseDataLabs" target="_blank">PulseDataLabs</a></li>
+      </ul>
+      <div class="footer-copy">
+        © <span id="year">2026</span> PulseDataLabs — Dados abertos para todos
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const CATEGORY_COLORS = {
+  aereo: '#00d4ff',
+  banco: '#00e5a0',
+  marketplace: '#f0b429',
+};
+
+let allPrograms = [];
+let chartInstance = null;
+
+function formatCurrency(val) {
+  if (val == null || isNaN(val) || val === 0) return '—';
+  return val.toFixed(4);
+}
+
+function renderPrograms(programs) {
+  const grid = document.getElementById('programs-grid');
+  if (!programs || programs.length === 0) {
+    grid.innerHTML = '<div class="empty-state">Nenhum dado disponível no momento.</div>';
+    return;
+  }
+  grid.innerHTML = programs.map(p => {
+    const cat = p.categoria || 'aereo';
+    const color = CATEGORY_COLORS[cat] || '#00d4ff';
+    const val = p.valor_milhar;
+    const formatted = formatCurrency(val);
+    return `
+      <div class="program-card" data-category="${cat}">
+        <div class="program-card-header">
+          <div class="program-name" style="color: ${color}">${p.nome}</div>
+          <span class="program-category-badge badge-${cat}">${cat}</span>
+        </div>
+        <div class="program-value">
+          <span class="currency">R$</span> ${formatted}
+          <span class="unit">/ 1.000 milhas</span>
+        </div>
+        <div class="program-desc">${p.descricao || ''}</div>
+        <div class="program-date">${p.data_captura || ''}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function filterPrograms(category) {
+  const cards = document.querySelectorAll('.program-card');
+  let visible = 0;
+  cards.forEach(card => {
+    if (category === 'all' || card.dataset.category === category) {
+      card.classList.remove('filtered-out');
+      visible++;
+    } else {
+      card.classList.add('filtered-out');
+    }
+  });
+  if (visible === 0 && cards.length > 0) {
+    const grid = document.getElementById('programs-grid');
+    if (!grid.querySelector('.empty-state')) {
+      grid.insertAdjacentHTML('beforeend', '<div class="empty-state">Nenhum programa encontrado nesta categoria.</div>');
+    }
+  } else {
+    const empty = document.querySelector('#programs-grid .empty-state');
+    if (empty) empty.remove();
+  }
+}
+
+function buildChart(historyData, selectedProgram) {
+  if (!historyData || !historyData[selectedProgram]) {
+    document.getElementById('historyChart').parentNode.innerHTML = '<div class="empty-state">Selecione um programa para ver o histórico.</div>';
+    return;
+  }
+
+  const ctx = document.getElementById('historyChart').getContext('2d');
+  if (chartInstance) chartInstance.destroy();
+
+  const data = historyData[selectedProgram];
+  const labels = data.map(d => d.data_captura);
+  const values = data.map(d => d.valor_milhar);
+
+  chartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: selectedProgram,
+        data: values,
+        borderColor: '#00d4ff',
+        backgroundColor: 'rgba(0, 212, 255, 0.08)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 2,
+        pointHoverRadius: 6,
+        pointBackgroundColor: '#00d4ff',
+        borderWidth: 2,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#141c26',
+          titleColor: '#e8eef4',
+          bodyColor: '#00d4ff',
+          borderColor: '#1e2d3d',
+          borderWidth: 1,
+          padding: 12,
+          callbacks: {
+            label: (ctx) => `R$ ${parseFloat(ctx.parsed.y).toFixed(4)} / 1.000 milhas`
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: '#6a8096', maxTicksLimit: 15, font: { size: 11 } },
+          grid: { color: 'rgba(30,45,61,0.5)' }
+        },
+        y: {
+          ticks: {
+            color: '#6a8096',
+            font: { size: 11 },
+            callback: (val) => 'R$ ' + val.toFixed(4)
+          },
+          grid: { color: 'rgba(30,45,61,0.5)' }
+        }
+      },
+      interaction: {
+        intersect: false,
+        mode: 'index'
+      }
+    }
+  });
+}
+
+function initChartControls(historyData) {
+  const container = document.getElementById('chart-controls');
+  const programs = Object.keys(historyData || {}).sort();
+  if (programs.length === 0) {
+    container.innerHTML = '<span style="color: var(--text3); font-size: 0.85rem;">Nenhum histórico disponível ainda.</span>';
+    return;
+  }
+
+  container.innerHTML = programs.map((p, i) =>
+    `<button class="chart-btn ${i === 0 ? 'active' : ''}" data-program="${p}">${p}</button>`
+  ).join('');
+
+  container.addEventListener('click', (e) => {
+    const btn = e.target.closest('.chart-btn');
+    if (!btn) return;
+    container.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    buildChart(historyData, btn.dataset.program);
+  });
+
+  buildChart(historyData, programs[0]);
+}
+
+function updateStats(summary) {
+  if (!summary) return;
+  document.getElementById('stat-programs').textContent = summary.total_programas || '—';
+  document.getElementById('stat-avg').textContent = summary.media_geral
+    ? 'R$ ' + summary.media_geral.toFixed(4) : '—';
+  document.getElementById('stat-best').textContent = summary.melhor_valor && summary.melhor_valor.valor
+    ? summary.melhor_valor.programa + ' R$ ' + summary.melhor_valor.valor.toFixed(4) : '—';
+  document.getElementById('stat-worst').textContent = summary.menor_valor && summary.menor_valor.valor
+    ? summary.menor_valor.programa + ' R$ ' + summary.menor_valor.valor.toFixed(4) : '—';
+}
+
+async function loadData() {
+  try {
+    const resp = await fetch('./data/dashboard.json');
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+
+    updateStats(data.summary);
+
+    const programs = [];
+    for (const [nome, info] of Object.entries(data.latest || {})) {
+      const cat = info.categoria || 'aereo';
+      programs.push({
+        nome,
+        valor_milhar: info.valor_milhar,
+        data_captura: info.data_captura,
+        descricao: info.descricao || '',
+        categoria: cat,
+      });
+    }
+    allPrograms = programs;
+    renderPrograms(programs);
+    initChartControls(data.history);
+  } catch (err) {
+    console.error('Erro ao carregar dados:', err);
+    document.getElementById('programs-grid').innerHTML =
+      '<div class="empty-state">Erro ao carregar dados. Tente novamente mais tarde.</div>';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadData();
+
+  document.querySelector('.datasets-filter').addEventListener('click', (e) => {
+    const btn = e.target.closest('.filter-btn');
+    if (!btn) return;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filterPrograms(btn.dataset.category);
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+});
+</script>
+</body>
+</html>

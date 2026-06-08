@@ -1,0 +1,56 @@
+window.PULSEMILHAS_PIPELINE_STATUS = {
+  "timestamp": "2026-06-07T21:01:05.849175",
+  "elapsed_seconds": 0.997624397277832,
+  "status": "success",
+  "summary": {
+    "total": 7,
+    "success": 1,
+    "failed": 0,
+    "drifts": 0
+  },
+  "scrapers": {
+    "smiles": {
+      "status": "success",
+      "elapsed_seconds": 0.9973998069763184,
+      "error": null,
+      "timestamp": "2026-06-07T21:01:05.849200"
+    },
+    "bradesco_estrelas": {
+      "status": "unknown",
+      "elapsed_seconds": 0.0,
+      "error": null,
+      "timestamp": null
+    },
+    "hotmilhas": {
+      "status": "unknown",
+      "elapsed_seconds": 0.0,
+      "error": null,
+      "timestamp": null
+    },
+    "itau_personnalite": {
+      "status": "unknown",
+      "elapsed_seconds": 0.0,
+      "error": null,
+      "timestamp": null
+    },
+    "latam_pass": {
+      "status": "unknown",
+      "elapsed_seconds": 0.0,
+      "error": null,
+      "timestamp": null
+    },
+    "livelo": {
+      "status": "unknown",
+      "elapsed_seconds": 0.0,
+      "error": null,
+      "timestamp": null
+    },
+    "maxmilhas": {
+      "status": "unknown",
+      "elapsed_seconds": 0.0,
+      "error": null,
+      "timestamp": null
+    }
+  },
+  "drifts": {}
+};
