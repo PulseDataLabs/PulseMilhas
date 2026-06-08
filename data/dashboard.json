@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-06-08T06:58:33.758843",
+  "timestamp": "2026-06-08T10:02:01.229928",
   "summary": {
-    "total_programas": 10,
+    "total_programas": 9,
     "media_geral": 23.82375,
     "menor_valor": {
       "programa": "Smiles",
@@ -48,12 +48,6 @@
       "data_captura": "2026-06-08",
       "categoria": "marketplace",
       "descricao": "Livelo (Multi-bandeiras) — R$ 18,00/milheiro"
-    },
-    "Maxmilhas": {
-      "valor_milhar": 0.0,
-      "data_captura": "2026-06-08",
-      "categoria": "marketplace",
-      "descricao": "Indisponível"
     },
     "Smiles": {
       "valor_milhar": 15.48,
@@ -122,12 +116,6 @@
           "descricao": "Livelo (Multi-bandeiras) — R$ 18,00/milheiro"
         },
         {
-          "nome": "Maxmilhas",
-          "valor_milhar": 0.0,
-          "data_captura": "2026-06-08",
-          "descricao": "Indisponível"
-        },
-        {
           "nome": "Smiles",
           "valor_milhar": 15.48,
           "data_captura": "2026-06-08",
@@ -176,7 +164,7 @@
       },
       {
         "data_captura": "2026-06-08",
-        "valor_milhar": 26.75
+        "valor_milhar": 29.0
       }
     ],
     "TudoAzul": [
@@ -186,7 +174,7 @@
       },
       {
         "data_captura": "2026-06-08",
-        "valor_milhar": 17.6
+        "valor_milhar": 14.0
       }
     ],
     "Livelo": [
@@ -216,7 +204,7 @@
       },
       {
         "data_captura": "2026-06-08",
-        "valor_milhar": 18.77
+        "valor_milhar": 17.3
       }
     ],
     "Hotmilhas": [],
@@ -229,8 +217,7 @@
         "data_captura": "2026-06-08",
         "valor_milhar": 30.0
       }
-    ],
-    "Maxmilhas": []
+    ]
   },
-  "records_total": 32
+  "records_total": 33
 }
