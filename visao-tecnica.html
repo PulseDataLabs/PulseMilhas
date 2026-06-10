@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PulseMilhas — Visão Técnica do Produto</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #080c10;
+      --bg2:       #0d1218;
+      --bg3:       #111820;
+      --surface:   #141c26;
+      --border:    #1e2d3d;
+      --border2:   #243444;
+      --accent:    #00d4ff;
+      --accent2:   #0095c8;
+      --gold:      #f0b429;
+      --gold2:     #c8902a;
+      --green:     #00e5a0;
+      --red:       #ff4d6d;
+      --purple:    #a78bfa;
+      --text:      #e8eef4;
+      --text2:     #8fa3b8;
+      --text3:     #6a8096;
+      --font-head: 'Syne', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0; opacity: 0.6;
+    }
+
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none; z-index: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.1rem 3rem;
+      background: rgba(8,12,16,0.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--font-head); font-weight: 800; font-size: 1.1rem;
+      letter-spacing: -0.03em; color: var(--text); text-decoration: none;
+      display: flex; align-items: center; gap: 0.55rem;
+    }
+
+    .pulse-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent); box-shadow: 0 0 10px var(--accent);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:.4; transform:scale(.7); }
+    }
+
+    .nav-badge {
+      font-family: var(--font-mono); font-size: 0.6rem;
+      background: rgba(240,180,41,0.12); color: var(--gold);
+      border: 1px solid rgba(240,180,41,0.25);
+      padding: 0.2rem 0.6rem; border-radius: 20px;
+      letter-spacing: 0.08em; text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex; gap: 2rem; list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text2);
+      text-decoration: none; letter-spacing: 0.08em; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    .nav-cta {
+      font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500;
+      color: var(--bg); background: var(--accent);
+      padding: 0.45rem 1.1rem; border-radius: 4px; text-decoration: none;
+      letter-spacing: 0.05em; transition: background .2s, transform .15s;
+    }
+    .nav-cta:hover { background: #33ddff; transform: translateY(-1px); }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 9rem 2rem 6rem;
+      overflow: hidden;
+    }
+
+    .hero-orb {
+      position: absolute; border-radius: 50%;
+      filter: blur(120px); pointer-events: none;
+    }
+    .hero-orb-1 { width:600px;height:600px; background:radial-gradient(circle,rgba(0,212,255,.1),transparent 70%); top:-120px;left:-160px; animation:drift1 12s ease-in-out infinite alternate; }
+    .hero-orb-2 { width:500px;height:500px; background:radial-gradient(circle,rgba(167,139,250,.07),transparent 70%); bottom:-80px;right:-100px; animation:drift2 15s ease-in-out infinite alternate; }
+    .hero-orb-3 { width:280px;height:280px; background:radial-gradient(circle,rgba(240,180,41,.06),transparent 70%); top:38%;left:52%; animation:drift3 10s ease-in-out infinite alternate; }
+
+    @keyframes drift1 { from{transform:translate(0,0)} to{transform:translate(60px,40px)} }
+    @keyframes drift2 { from{transform:translate(0,0)} to{transform:translate(-40px,-60px)} }
+    @keyframes drift3 { from{transform:translate(0,0)} to{transform:translate(30px,-30px)} }
+
+    .hero-eyebrow {
+      font-family: var(--font-mono); font-size: 0.68rem; color: var(--text3);
+      letter-spacing: 0.18em; text-transform: uppercase;
+      margin-bottom: 2rem;
+      display: flex; align-items: center; gap: 0.75rem;
+      animation: fadeUp .8s ease both;
+    }
+    .hero-eyebrow::before, .hero-eyebrow::after { content:''; width:36px; height:1px; background:var(--border2); }
+
+    .hero-title {
+      font-family: var(--font-head); font-weight: 800;
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      line-height: 1; letter-spacing: -0.04em; margin-bottom: 0.5rem;
+      animation: fadeUp .8s ease .1s both;
+    }
+    .hero-title .accent { color: var(--accent); }
+    .hero-title .gold   { color: var(--gold); }
+
+    .hero-subtitle {
+      font-family: var(--font-mono); font-size: 0.82rem; color: var(--accent);
+      letter-spacing: 0.2em; text-transform: uppercase;
+      margin-bottom: 1.75rem; display: block;
+      animation: fadeUp .8s ease .2s both;
+    }
+
+    .hero-desc {
+      max-width: 560px; font-size: 1rem; line-height: 1.8;
+      color: var(--text2); margin-bottom: 2.5rem;
+      animation: fadeUp .8s ease .3s both;
+    }
+
+    .hero-pills {
+      display: flex; gap: .75rem; flex-wrap: wrap; justify-content: center;
+      margin-bottom: 3rem;
+      animation: fadeUp .8s ease .4s both;
+    }
+
+    .pill {
+      font-family: var(--font-mono); font-size: 0.68rem;
+      padding: .35rem .9rem; border-radius: 20px;
+      letter-spacing: .07em; text-transform: uppercase;
+    }
+    .pill-cyan   { background: rgba(0,212,255,.08); color:var(--accent); border:1px solid rgba(0,212,255,.2); }
+    .pill-gold   { background: rgba(240,180,41,.08); color:var(--gold);   border:1px solid rgba(240,180,41,.2); }
+    .pill-green  { background: rgba(0,229,160,.08); color:var(--green);   border:1px solid rgba(0,229,160,.2); }
+    .pill-purple { background: rgba(167,139,250,.08); color:var(--purple); border:1px solid rgba(167,139,250,.2); }
+
+    /* ─── SECTIONS ─── */
+    section { position: relative; z-index: 1; }
+
+    .container { max-width: 1160px; margin: 0 auto; padding: 0 2rem; }
+
+    .sec { padding: 7rem 0; }
+    .sec-alt { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+    .sec-label {
+      font-family: var(--font-mono); font-size: 0.68rem; color: var(--accent);
+      letter-spacing: .2em; text-transform: uppercase;
+      margin-bottom: .9rem;
+      display: flex; align-items: center; gap: .75rem;
+    }
+    .sec-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+    .sec-title {
+      font-family: var(--font-head); font-weight: 700;
+      font-size: clamp(1.7rem, 3.5vw, 2.6rem);
+      letter-spacing: -0.03em; line-height: 1.1; margin-bottom: .9rem;
+    }
+
+    .sec-desc {
+      color: var(--text2); font-size: .975rem; line-height: 1.8;
+      max-width: 580px;
+    }
+
+    /* ─── PROBLEMA / MERCADO ─── */
+    .market-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .market-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.75rem;
+      transition: border-color .25s, transform .25s;
+    }
+    .market-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+
+    .market-card-label {
+      font-family: var(--font-mono); font-size: .65rem; letter-spacing: .12em;
+      text-transform: uppercase; margin-bottom: .6rem;
+    }
+    .label-red  { color: var(--red); }
+    .label-cyan { color: var(--accent); }
+
+    .market-card-title {
+      font-family: var(--font-head); font-weight: 700; font-size: 1.1rem;
+      margin-bottom: .75rem; color: var(--text);
+    }
+
+    .market-bullets { list-style: none; display: flex; flex-direction: column; gap: .6rem; }
+    .market-bullets li {
+      font-size: .875rem; color: var(--text2); line-height: 1.55;
+      display: flex; gap: .6rem; align-items: flex-start;
+    }
+    .market-bullets li::before { content: '—'; color: var(--text3); flex-shrink: 0; margin-top: 1px; }
+
+    .big-stat-row {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem; margin-top: 2rem;
+    }
+
+    .big-stat {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.5rem; text-align: center;
+    }
+    .big-stat-val {
+      font-family: var(--font-head); font-weight: 800; font-size: 2.2rem;
+      letter-spacing: -0.04em; color: var(--text); display: block;
+    }
+    .big-stat-val.cyan { color: var(--accent); }
+    .big-stat-val.gold { color: var(--gold); }
+    .big-stat-val.green { color: var(--green); }
+    .big-stat-label {
+      font-family: var(--font-mono); font-size: .64rem; color: var(--text3);
+      text-transform: uppercase; letter-spacing: .1em; margin-top: .3rem; display: block;
+    }
+    .big-stat-src {
+      font-family: var(--font-mono); font-size: .58rem; color: var(--text3);
+      margin-top: .2rem; display: block; opacity: .6;
+    }
+
+    /* ─── ARQUITETURA ─── */
+    .arch-diagram {
+      margin-top: 2.5rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 2.5rem 2rem; overflow-x: auto;
+    }
+
+    .arch-layers { display: flex; flex-direction: column; gap: 1px; }
+
+    .arch-layer {
+      display: grid; gap: 1px;
+      position: relative;
+    }
+
+    .arch-layer-label {
+      font-family: var(--font-mono); font-size: .6rem; color: var(--text3);
+      letter-spacing: .14em; text-transform: uppercase;
+      writing-mode: vertical-lr; transform: rotate(180deg);
+      padding: .5rem 0; white-space: nowrap; user-select: none;
+      min-width: 28px;
+    }
+
+    .arch-row {
+      display: flex; gap: 1rem; align-items: stretch; padding: .75rem 0;
+    }
+
+    .arch-connector {
+      display: flex; justify-content: center; padding: .2rem 0;
+    }
+
+    .arch-connector-line {
+      width: 1px; height: 28px;
+      background: linear-gradient(to bottom, var(--border2), transparent);
+    }
+
+    .arch-node {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 8px; padding: .8rem 1.1rem;
+      display: flex; flex-direction: column; gap: .25rem;
+      flex: 1; min-width: 0;
+      transition: border-color .2s, transform .2s;
+      cursor: default;
+    }
+    .arch-node:hover { border-color: var(--border2); transform: translateY(-1px); }
+
+    .arch-node.cyan  { border-top: 2px solid var(--accent); }
+    .arch-node.gold  { border-top: 2px solid var(--gold); }
+    .arch-node.green { border-top: 2px solid var(--green); }
+    .arch-node.purple{ border-top: 2px solid var(--purple); }
+    .arch-node.red   { border-top: 2px solid var(--red); }
+
+    .arch-node-name {
+      font-family: var(--font-head); font-weight: 600; font-size: .85rem;
+      color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .arch-node-desc {
+      font-family: var(--font-mono); font-size: .62rem; color: var(--text3);
+      line-height: 1.45; letter-spacing: .02em;
+    }
+    .arch-node-tag {
+      font-family: var(--font-mono); font-size: .58rem; margin-top: .3rem;
+      padding: .15rem .45rem; border-radius: 10px; display: inline-block; align-self: flex-start;
+    }
+    .tag-cyan   { background:rgba(0,212,255,.1);  color:var(--accent); }
+    .tag-gold   { background:rgba(240,180,41,.1); color:var(--gold); }
+    .tag-green  { background:rgba(0,229,160,.1);  color:var(--green); }
+    .tag-purple { background:rgba(167,139,250,.1);color:var(--purple); }
+    .tag-red    { background:rgba(255,77,109,.1); color:var(--red); }
+
+    .arch-sep {
+      display: flex; align-items: center; gap: .75rem;
+      font-family: var(--font-mono); font-size: .6rem;
+      color: var(--text3); letter-spacing: .12em; text-transform: uppercase;
+      padding: .5rem 0;
+    }
+    .arch-sep::before, .arch-sep::after { content:''; flex:1; height:1px; background:var(--border); }
+
+    /* ─── FLUXO DE TRANSAÇÃO ─── */
+    .flow-steps {
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      gap: 0; margin-top: 2.5rem; position: relative;
+    }
+
+    .flow-step {
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; padding: 1.5rem .75rem;
+      position: relative;
+    }
+
+    .flow-step:not(:last-child)::after {
+      content: '→';
+      position: absolute; right: -10px; top: 50%; transform: translateY(-50%);
+      font-family: var(--font-mono); font-size: .9rem;
+      color: var(--border2); z-index: 1;
+    }
+
+    .flow-num {
+      font-family: var(--font-head); font-weight: 800; font-size: 1.6rem;
+      letter-spacing: -0.04em; color: var(--accent);
+      line-height: 1; margin-bottom: .5rem;
+    }
+
+    .flow-icon {
+      font-size: 1.4rem; margin-bottom: .6rem;
+    }
+
+    .flow-title {
+      font-family: var(--font-head); font-weight: 700; font-size: .85rem;
+      color: var(--text); margin-bottom: .35rem;
+    }
+
+    .flow-desc {
+      font-size: .78rem; color: var(--text2); line-height: 1.5;
+    }
+
+    .flow-bg {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+    }
+
+    /* ─── MODELO DE RECEITA ─── */
+    .revenue-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem; margin-top: 2.5rem;
+    }
+
+    .rev-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.75rem;
+      display: flex; flex-direction: column; gap: .5rem;
+      transition: border-color .25s, transform .25s;
+      position: relative; overflow: hidden;
+    }
+    .rev-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+
+    .rev-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at top left, var(--rev-color, rgba(0,212,255,.04)), transparent 60%);
+      pointer-events: none;
+    }
+
+    .rev-priority {
+      font-family: var(--font-mono); font-size: .6rem; letter-spacing: .12em;
+      text-transform: uppercase; display: inline-flex; align-items: center;
+      gap: .4rem; margin-bottom: .25rem;
+    }
+    .prio-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+    .rev-title {
+      font-family: var(--font-head); font-weight: 700; font-size: 1.05rem;
+      color: var(--text);
+    }
+
+    .rev-value {
+      font-family: var(--font-mono); font-size: .8rem; color: var(--text2);
+    }
+
+    .rev-desc {
+      font-size: .85rem; color: var(--text2); line-height: 1.6;
+      margin-top: .25rem;
+    }
+
+    .rev-chart-wrap { margin-top: 2.5rem; position: relative; height: 260px; }
+
+    /* ─── STACK TÉCNICA ─── */
+    .stack-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem; margin-top: 2.5rem;
+    }
+
+    .stack-group {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.25rem;
+    }
+
+    .stack-group-label {
+      font-family: var(--font-mono); font-size: .62rem; color: var(--text3);
+      letter-spacing: .12em; text-transform: uppercase; margin-bottom: .8rem;
+    }
+
+    .stack-items { display: flex; flex-direction: column; gap: .45rem; }
+
+    .stack-item {
+      display: flex; align-items: center; gap: .6rem;
+      font-family: var(--font-mono); font-size: .78rem; color: var(--text2);
+    }
+
+    .stack-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ─── ROADMAP ─── */
+    .roadmap-track {
+      margin-top: 2.5rem;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 0; position: relative;
+    }
+
+    .roadmap-track::before {
+      content: '';
+      position: absolute; top: 36px; left: 10%; right: 10%; height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--gold), var(--purple), var(--border2));
+      z-index: 0;
+    }
+
+    .rm-phase { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0 .75rem; position: relative; z-index: 1; }
+
+    .rm-dot {
+      width: 18px; height: 18px; border-radius: 50%;
+      border: 2px solid; display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1rem; background: var(--bg); flex-shrink: 0;
+    }
+    .rm-dot-inner { width: 6px; height: 6px; border-radius: 50%; }
+
+    .rm-phase.done   .rm-dot { border-color: var(--green); }
+    .rm-phase.done   .rm-dot-inner { background: var(--green); box-shadow: 0 0 6px var(--green); }
+    .rm-phase.active .rm-dot { border-color: var(--accent); }
+    .rm-phase.active .rm-dot-inner { background: var(--accent); box-shadow: 0 0 6px var(--accent); animation: pulse-dot 1.5s ease-in-out infinite; }
+    .rm-phase.next   .rm-dot { border-color: var(--gold); }
+    .rm-phase.next   .rm-dot-inner { background: var(--gold); opacity: .5; }
+    .rm-phase.future .rm-dot { border-color: var(--border2); }
+    .rm-phase.future .rm-dot-inner { background: var(--border2); }
+
+    .rm-quarter {
+      font-family: var(--font-mono); font-size: .65rem; color: var(--text3);
+      letter-spacing: .1em; text-transform: uppercase; margin-bottom: .4rem;
+    }
+    .rm-title {
+      font-family: var(--font-head); font-weight: 700; font-size: .9rem;
+      color: var(--text); margin-bottom: .5rem;
+    }
+    .rm-items { display: flex; flex-direction: column; gap: .35rem; }
+    .rm-item {
+      font-size: .78rem; color: var(--text2);
+      display: flex; gap: .4rem; align-items: flex-start; text-align: left;
+    }
+    .rm-item::before { content: '·'; color: var(--text3); flex-shrink: 0; }
+
+    .rm-status {
+      font-family: var(--font-mono); font-size: .58rem; margin-top: .6rem;
+      padding: .2rem .55rem; border-radius: 20px; display: inline-block;
+    }
+    .status-done   { background:rgba(0,229,160,.1);  color:var(--green); border:1px solid rgba(0,229,160,.2); }
+    .status-active { background:rgba(0,212,255,.1);  color:var(--accent); border:1px solid rgba(0,212,255,.2); }
+    .status-next   { background:rgba(240,180,41,.1); color:var(--gold);  border:1px solid rgba(240,180,41,.2); }
+    .status-future { background:rgba(30,45,61,.5);   color:var(--text3); border:1px solid var(--border); }
+
+    /* ─── RISCOS ─── */
+    .risk-table {
+      margin-top: 2.5rem; width: 100%;
+      border-collapse: collapse;
+    }
+
+    .risk-table th {
+      font-family: var(--font-mono); font-size: .65rem; color: var(--text3);
+      letter-spacing: .12em; text-transform: uppercase;
+      padding: .6rem 1rem; text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .risk-table td {
+      padding: .9rem 1rem; border-bottom: 1px solid var(--border);
+      font-size: .875rem; color: var(--text2); line-height: 1.5;
+      vertical-align: top;
+    }
+
+    .risk-table tr:last-child td { border-bottom: none; }
+    .risk-table tr:hover td { background: var(--bg3); }
+
+    .risk-name {
+      font-family: var(--font-head); font-weight: 600;
+      font-size: .88rem; color: var(--text);
+    }
+
+    .risk-badge {
+      font-family: var(--font-mono); font-size: .6rem;
+      padding: .2rem .55rem; border-radius: 20px; display: inline-block;
+      white-space: nowrap;
+    }
+    .risk-high   { background:rgba(255,77,109,.12); color:var(--red);    border:1px solid rgba(255,77,109,.25); }
+    .risk-medium { background:rgba(240,180,41,.12); color:var(--gold);   border:1px solid rgba(240,180,41,.25); }
+    .risk-low    { background:rgba(0,229,160,.12);  color:var(--green);  border:1px solid rgba(0,229,160,.25); }
+
+    /* ─── EQUIPE / CONTEXTO ─── */
+    .context-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 2rem; margin-top: 2.5rem;
+    }
+
+    .ctx-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.75rem;
+    }
+
+    .ctx-card-label {
+      font-family: var(--font-mono); font-size: .62rem; color: var(--accent);
+      letter-spacing: .12em; text-transform: uppercase; margin-bottom: .75rem;
+    }
+
+    .ctx-card-title {
+      font-family: var(--font-head); font-weight: 700; font-size: 1.05rem;
+      color: var(--text); margin-bottom: .75rem;
+    }
+
+    .ctx-items { display: flex; flex-direction: column; gap: .6rem; }
+    .ctx-item {
+      display: flex; gap: .75rem; align-items: flex-start;
+      font-size: .875rem; color: var(--text2); line-height: 1.5;
+    }
+    .ctx-bullet {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent); flex-shrink: 0; margin-top: 6px;
+    }
+    .ctx-bullet.gold { background: var(--gold); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      position: relative; z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 0; background: var(--bg);
+    }
+
+    .footer-inner {
+      display: flex; align-items: center;
+      justify-content: space-between; flex-wrap: wrap; gap: 1.5rem;
+    }
+
+    .footer-logo {
+      font-family: var(--font-head); font-weight: 800;
+      font-size: .95rem; letter-spacing: -0.03em; color: var(--text);
+      display: flex; align-items: center; gap: .5rem;
+    }
+
+    .footer-links {
+      display: flex; gap: 2rem; list-style: none;
+    }
+
+    .footer-links a {
+      font-family: var(--font-mono); font-size: .68rem; color: var(--text3);
+      text-decoration: none; text-transform: uppercase;
+      letter-spacing: .08em; transition: color .2s;
+    }
+    .footer-links a:hover { color: var(--accent); }
+
+    .footer-copy {
+      font-family: var(--font-mono); font-size: .62rem; color: var(--text3);
+    }
+
+    /* ─── UTILS ─── */
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(20px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+
+    @media (max-width: 960px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .market-grid, .context-grid { grid-template-columns: 1fr; }
+      .revenue-grid { grid-template-columns: 1fr; }
+      .big-stat-row { grid-template-columns: 1fr 1fr; }
+      .flow-steps { grid-template-columns: 1fr; }
+      .flow-step:not(:last-child)::after { content: '↓'; right: auto; bottom: -14px; top: auto; transform: none; left: 50%; }
+      .roadmap-track { grid-template-columns: 1fr 1fr; }
+      .roadmap-track::before { display: none; }
+    }
+
+    @media (max-width: 600px) {
+      .container { padding: 0 1.25rem; }
+      .hero { padding: 8rem 1.25rem 4rem; }
+      .hero-title { font-size: 2.5rem; }
+      .big-stat-row { grid-template-columns: 1fr; }
+      .roadmap-track { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="pulse-dot"></span>
+    PulseMilhas
+    <span class="nav-badge">Visão Técnica</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#mercado">Mercado</a></li>
+    <li><a href="#arquitetura">Arquitetura</a></li>
+    <li><a href="#receita">Receita</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#riscos">Riscos</a></li>
+  </ul>
+  <a href="index.html" class="nav-cta">Ver produto ↗</a>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="hero">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-orb hero-orb-3"></div>
+
+  <div class="hero-eyebrow">PulseDataLabs · Documento interno · 2026</div>
+
+  <h1 class="hero-title">
+    <span class="accent">Pulse</span><span class="gold">Milhas</span>
+  </h1>
+
+  <span class="hero-subtitle">Visão técnica do produto</span>
+
+  <p class="hero-desc">
+    Marketplace P2P de milhas aéreas para o mercado brasileiro.
+    Precificação orientada a dados, escrow automático e score verificado.
+    Construído sobre a infraestrutura da PulseDataLabs.
+  </p>
+
+  <div class="hero-pills">
+    <span class="pill pill-cyan">Marketplace P2P</span>
+    <span class="pill pill-gold">Pessoa física</span>
+    <span class="pill pill-green">Escrow + Pix</span>
+    <span class="pill pill-purple">PulseFlat integrado</span>
+  </div>
+</section>
+
+<!-- ─── MERCADO ─── -->
+<section class="sec sec-alt" id="mercado">
+  <div class="container">
+    <div class="sec-label reveal">01 — Mercado</div>
+    <h2 class="sec-title reveal">Problema real,<br>mercado enorme</h2>
+    <p class="sec-desc reveal">O mercado de venda de milhas no Brasil movimenta bilhões por ano — mas ocorre quase inteiramente de forma informal, sem segurança, sem precificação justa e sem rastreabilidade.</p>
+
+    <div class="big-stat-row reveal">
+      <div class="big-stat">
+        <span class="big-stat-val cyan">R$ 12 bi+</span>
+        <span class="big-stat-label">Mercado potencial (milhas BR)</span>
+        <span class="big-stat-src">Estimativa ABEMF 2025</span>
+      </div>
+      <div class="big-stat">
+        <span class="big-stat-val gold">68 mi</span>
+        <span class="big-stat-label">Contas ativas em prog. fidelidade</span>
+        <span class="big-stat-src">Dados dos programas 2025</span>
+      </div>
+      <div class="big-stat">
+        <span class="big-stat-val green">~40%</span>
+        <span class="big-stat-label">Milhas expiram sem uso</span>
+        <span class="big-stat-src">Relatório setorial Aeroin</span>
+      </div>
+    </div>
+
+    <div class="market-grid reveal">
+      <div class="market-card">
+        <div class="market-card-label label-red">Problema</div>
+        <div class="market-card-title">Como funciona hoje</div>
+        <ul class="market-bullets">
+          <li>Transações via grupos de WhatsApp e Telegram sem qualquer garantia</li>
+          <li>Sem escrow: comprador paga antes de receber as milhas — risco de golpe total</li>
+          <li>Precificação arbitrária — sem referência de mercado</li>
+          <li>Sem score ou histórico do vendedor</li>
+          <li>Bancos e programas proíbem contratualmente, mas toleram na prática</li>
+          <li>Competidores (MaxMilhas, Voe Fácil) cobram spread alto, não são P2P</li>
+        </ul>
+      </div>
+      <div class="market-card">
+        <div class="market-card-label label-cyan">Solução</div>
+        <div class="market-card-title">O que o PulseMilhas resolve</div>
+        <ul class="market-bullets">
+          <li>Matching automático entre comprador e vendedor por programa e faixa de preço</li>
+          <li>Escrow retém o pagamento até a transferência ser confirmada no programa</li>
+          <li>Precificação baseada em dados reais via PulseFlat (câmbio, histórico, IPCA)</li>
+          <li>Score público e verificado para cada vendedor</li>
+          <li>KYC de identidade em todos os participantes — antifraude nativo</li>
+          <li>Fee menor que competidores por ser P2P — mais valor para as duas partes</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ARQUITETURA ─── -->
+<section class="sec" id="arquitetura">
+  <div class="container">
+    <div class="sec-label reveal">02 — Arquitetura</div>
+    <h2 class="sec-title reveal">Quatro camadas,<br>um produto coeso</h2>
+    <p class="sec-desc reveal">A arquitetura é construída em camadas desacopladas. A camada de dados herda diretamente o PulseFlat; as camadas de produto e pagamento são específicas do PulseMilhas.</p>
+
+    <div class="arch-diagram reveal">
+
+      <div class="arch-sep">Camada de usuários</div>
+      <div class="arch-row">
+        <div class="arch-node cyan">
+          <div class="arch-node-name">Comprador</div>
+          <div class="arch-node-desc">Busca, filtra por programa e faixa de preço, paga via Pix/cartão</div>
+          <span class="arch-node-tag tag-cyan">Web / App</span>
+        </div>
+        <div class="arch-node gold">
+          <div class="arch-node-name">Vendedor</div>
+          <div class="arch-node-desc">Lista saldo disponível, define preço mínimo, recebe via Pix</div>
+          <span class="arch-node-tag tag-gold">Web / App</span>
+        </div>
+      </div>
+
+      <div class="arch-sep">Camada de produto</div>
+      <div class="arch-row">
+        <div class="arch-node cyan">
+          <div class="arch-node-name">Matching engine</div>
+          <div class="arch-node-desc">Cruza oferta × demanda por programa, quantidade e preço em tempo real</div>
+          <span class="arch-node-tag tag-cyan">Python / FastAPI</span>
+        </div>
+        <div class="arch-node green">
+          <div class="arch-node-name">Escrow service</div>
+          <div class="arch-node-desc">Retém pagamento, monitora confirmação da transferência no programa, libera automaticamente</div>
+          <span class="arch-node-tag tag-green">Estado de custódia</span>
+        </div>
+        <div class="arch-node gold">
+          <div class="arch-node-name">Motor de preços</div>
+          <div class="arch-node-desc">Calcula benchmark de valor justo por milha com base em dados do PulseFlat</div>
+          <span class="arch-node-tag tag-gold">PulseFlat API</span>
+        </div>
+        <div class="arch-node purple">
+          <div class="arch-node-name">Score de reputação</div>
+          <div class="arch-node-desc">Histórico de transações, pontualidade, volume, avaliações. Público e auditável</div>
+          <span class="arch-node-tag tag-purple">PostgreSQL</span>
+        </div>
+      </div>
+
+      <div class="arch-sep">Camada de dados</div>
+      <div class="arch-row">
+        <div class="arch-node cyan">
+          <div class="arch-node-name">PulseFlat API</div>
+          <div class="arch-node-desc">BCB, B3, ANBIMA, IBGE — câmbio, IPCA, Selic, cotações em tempo real</div>
+          <span class="arch-node-tag tag-cyan">Já em produção</span>
+        </div>
+        <div class="arch-node gold">
+          <div class="arch-node-name">Loyalty data layer</div>
+          <div class="arch-node-desc">Scraping e normalização dos programas: Smiles, Latam Pass, TudoAzul, Livelo</div>
+          <span class="arch-node-tag tag-gold">A construir</span>
+        </div>
+        <div class="arch-node green">
+          <div class="arch-node-name">Índice PulseMilhas</div>
+          <div class="arch-node-desc">Série histórica de preço médio por programa. Produto de dados B2B vendável</div>
+          <span class="arch-node-tag tag-green">Output proprietário</span>
+        </div>
+      </div>
+
+      <div class="arch-sep">Camada de infraestrutura</div>
+      <div class="arch-row">
+        <div class="arch-node purple">
+          <div class="arch-node-name">Pagamentos</div>
+          <div class="arch-node-desc">Pix via Gerencianet / Efí, cartão via Stripe BR, wallet interno para escrow</div>
+          <span class="arch-node-tag tag-purple">Fintech grade</span>
+        </div>
+        <div class="arch-node purple">
+          <div class="arch-node-name">KYC / Antifraude</div>
+          <div class="arch-node-desc">Validação CPF + biometria via Serpro/Unico, monitoramento de padrões suspeitos</div>
+          <span class="arch-node-tag tag-purple">Obrigatório D1</span>
+        </div>
+        <div class="arch-node purple">
+          <div class="arch-node-name">Notificações</div>
+          <div class="arch-node-desc">Push, e-mail e WhatsApp para matches, confirmações e alertas de preço</div>
+          <span class="arch-node-tag tag-purple">Firebase / Twilio</span>
+        </div>
+        <div class="arch-node purple">
+          <div class="arch-node-name">Observabilidade</div>
+          <div class="arch-node-desc">Logs, métricas de transação, uptime e alertas de fraude em tempo real</div>
+          <span class="arch-node-tag tag-purple">Sentry / Grafana</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── FLUXO DE TRANSAÇÃO ─── -->
+<section class="sec sec-alt" id="fluxo">
+  <div class="container">
+    <div class="sec-label reveal">03 — Fluxo</div>
+    <h2 class="sec-title reveal">Ciclo de vida<br>de uma transação</h2>
+    <p class="sec-desc reveal">Do match ao Pix: cinco estados, totalmente auditáveis, sem intermediação manual.</p>
+
+    <div class="flow-bg reveal" style="margin-top: 2.5rem;">
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="flow-num">01</div>
+          <div class="flow-icon">🔍</div>
+          <div class="flow-title">Match</div>
+          <div class="flow-desc">Engine cruza oferta e demanda. Notificação para as duas partes.</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">02</div>
+          <div class="flow-icon">💳</div>
+          <div class="flow-title">Pagamento</div>
+          <div class="flow-desc">Comprador paga via Pix ou cartão. Valor entra em custódia (escrow).</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">03</div>
+          <div class="flow-icon">✈️</div>
+          <div class="flow-title">Transferência</div>
+          <div class="flow-desc">Vendedor transfere as milhas no site do programa. Prazo: 24h.</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">04</div>
+          <div class="flow-icon">✅</div>
+          <div class="flow-title">Confirmação</div>
+          <div class="flow-desc">Plataforma verifica crédito das milhas na conta do comprador.</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num">05</div>
+          <div class="flow-icon">⚡</div>
+          <div class="flow-title">Liquidação</div>
+          <div class="flow-desc">Escrow liberado. Pix cai na conta do vendedor em segundos.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── MODELO DE RECEITA ─── -->
+<section class="sec" id="receita">
+  <div class="container">
+    <div class="sec-label reveal">04 — Receita</div>
+    <h2 class="sec-title reveal">Três fontes de receita,<br>uma prioridade clara</h2>
+    <p class="sec-desc reveal">A taxa de transação é o motor principal. As demais fontes escalam com a base e com o volume de dados gerados pela plataforma.</p>
+
+    <div class="revenue-grid reveal">
+      <div class="rev-card" style="--rev-color: rgba(0,212,255,0.06);">
+        <div class="rev-priority">
+          <span class="prio-dot" style="background:var(--accent); box-shadow: 0 0 6px var(--accent);"></span>
+          <span style="color:var(--accent);">Primária · Alta margem</span>
+        </div>
+        <div class="rev-title">Taxa de transação</div>
+        <div class="rev-value">3–5% do valor bruto negociado</div>
+        <div class="rev-desc">Cobrada sobre cada transação concluída. Split entre comprador (1–2%) e vendedor (2–3%). Modelo padrão de marketplace.</div>
+      </div>
+      <div class="rev-card" style="--rev-color: rgba(240,180,41,0.06);">
+        <div class="rev-priority">
+          <span class="prio-dot" style="background:var(--gold); box-shadow: 0 0 6px var(--gold);"></span>
+          <span style="color:var(--gold);">Secundária · Recorrente</span>
+        </div>
+        <div class="rev-title">Assinatura premium</div>
+        <div class="rev-value">R$ 49–149/mês para vendedores</div>
+        <div class="rev-desc">Dashboard analítico, histórico de precificação, destaque nas listagens, acesso à API do Índice PulseMilhas e alertas de demanda.</div>
+      </div>
+      <div class="rev-card" style="--rev-color: rgba(0,229,160,0.06);">
+        <div class="rev-priority">
+          <span class="prio-dot" style="background:var(--green); box-shadow: 0 0 6px var(--green);"></span>
+          <span style="color:var(--green);">Terciária · B2B / Dados</span>
+        </div>
+        <div class="rev-title">Índice PulseMilhas B2B</div>
+        <div class="rev-value">API de dados para fintechs e emissores</div>
+        <div class="rev-desc">Série histórica de preço médio por programa. Vendável para fintechs, emissores, bancos e consultorias — alinha com o core da PulseDataLabs.</div>
+      </div>
+    </div>
+
+    <div class="rev-chart-wrap reveal">
+      <canvas id="revenueChart"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- ─── STACK TÉCNICA ─── -->
+<section class="sec sec-alt" id="stack">
+  <div class="container">
+    <div class="sec-label reveal">05 — Stack</div>
+    <h2 class="sec-title reveal">Tecnologias escolhidas<br>com intencionalidade</h2>
+    <p class="sec-desc reveal">Pragmatismo primeiro: stack enxuta, conhecida pela equipe PulseDataLabs, com espaço para escalar quando necessário.</p>
+
+    <div class="stack-grid reveal">
+      <div class="stack-group">
+        <div class="stack-group-label">Backend</div>
+        <div class="stack-items">
+          <div class="stack-item"><span class="stack-dot" style="background:var(--accent)"></span>Python 3.12 + FastAPI</div>
+          <div class="stack-item"><span class="stack-dot" style="background:var(--accent)"></span>PostgreSQL (transações)</div>
+          <div class="stack-item"><span class="stack-dot" style="background:var(--accent)"></span>Redis (filas e sessões)</div>
+          <div class="stack-item"><span class="stack-dot" style="background:var(--accent)"></span>Celery (jobs assíncronos)</div>
+        </div>
+      </div>
+      <div class="stack-group">
+        <div class="stack-group-label">Frontend</div>
+        <div class="stack-items">
+          <div class="stack-item"><span class="stack-dot" style="background:var(--gold)"></span>Next.js 14 (App Router)</div>
+          <div class="stack-item"><span class="stack-dot" style="background:var(--gold)"></span>TypeScript + Tailwind</div>
+          <div class="stack-item"><span class="stack-dot" style="background:var(--gold)"></span>React Query (estado remoto)</div>
+          <div class="stack-item"><span class="stack-dot" style="background:var(--gold)"></span>Vercel (deploy)</div>
+        </div>
+      </div>
+      <div class="stack-group">
+        <div class="stack-group-label">Dados / Pipelines</div>
+        <div class="stack-items">
+          <div class="stack-item"><span class="stack-dot" style="background:var(--green)"></span>PulseFlat (já existe)</div>
+          <div class="stack-item"><span class="stack-dot" style="background:var(--green)"></span>Scrapers Python (Playwright)</div>
+          <div class="stack-item"><span class="stack-dot" style="background:var(--green)"></span>GitHub Actions (scheduling)</div>
+          <div class="stack-item"><span class="stack-dot" style="background:var(--green)"></span>DuckDB (análise local)</div>
+        </div>
+      </div>
+      <div class="stack-group">
+        <div class="stack-group-label">Pagamentos</div>
+        <div class="stack-items">
+          <div class="stack-item"><span class="stack-dot" style="background:var(--purple)"></span>Efí Bank (Pix / escrow)</div>
+          <div class="stack-item"><span class="stack-dot" style="background:var(--purple)"></span>Stripe (cartão)</div>
+          <div class="stack-item"><span class="stack-dot" style="background:var(--purple)"></span>Wallet interna (custódia)</div>
+        </div>
+      </div>
+      <div class="stack-group">
+        <div class="stack-group-label">Identidade / KYC</div>
+        <div class="stack-items">
+          <div class="stack-item"><span class="stack-dot" style="background:var(--red)"></span>Unico Check (biometria)</div>
+          <div class="stack-item"><span class="stack-dot" style="background:var(--red)"></span>Serpro CPF validation</div>
+          <div class="stack-item"><span class="stack-dot" style="background:var(--red)"></span>Auth0 (autenticação)</div>
+        </div>
+      </div>
+      <div class="stack-group">
+        <div class="stack-group-label">Infra / Observabilidade</div>
+        <div class="stack-items">
+          <div class="stack-item"><span class="stack-dot" style="background:var(--text3)"></span>AWS (RDS, ECS, S3)</div>
+          <div class="stack-item"><span class="stack-dot" style="background:var(--text3)"></span>Sentry (erros)</div>
+          <div class="stack-item"><span class="stack-dot" style="background:var(--text3)"></span>Grafana + Prometheus</div>
+          <div class="stack-item"><span class="stack-dot" style="background:var(--text3)"></span>GitHub Actions (CI/CD)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ROADMAP ─── -->
+<section class="sec" id="roadmap">
+  <div class="container">
+    <div class="sec-label reveal">06 — Roadmap</div>
+    <h2 class="sec-title reveal">Da validação<br>ao produto completo</h2>
+    <p class="sec-desc reveal">Quatro fases de 90 dias cada. Foco em validar demanda antes de construir infraestrutura pesada.</p>
+
+    <div class="roadmap-track reveal">
+      <div class="rm-phase done">
+        <div class="rm-dot"><div class="rm-dot-inner"></div></div>
+        <div class="rm-quarter">Q2 2026</div>
+        <div class="rm-title">Descoberta</div>
+        <div class="rm-items">
+          <div class="rm-item">Visão do produto definida</div>
+          <div class="rm-item">Landing page de waitlist publicada</div>
+          <div class="rm-item">Entrevistas com 15 usuários</div>
+          <div class="rm-item">Análise de concorrência</div>
+          <div class="rm-item">Consulta jurídica inicial</div>
+        </div>
+        <span class="rm-status status-done">Concluído</span>
+      </div>
+
+      <div class="rm-phase active">
+        <div class="rm-dot"><div class="rm-dot-inner"></div></div>
+        <div class="rm-quarter">Q3 2026</div>
+        <div class="rm-title">MVP</div>
+        <div class="rm-items">
+          <div class="rm-item">Cadastro + KYC básico</div>
+          <div class="rm-item">Listagem de ofertas manual</div>
+          <div class="rm-item">Escrow via Pix (Efí)</div>
+          <div class="rm-item">Score inicial de vendedores</div>
+          <div class="rm-item">Smiles + Latam Pass apenas</div>
+        </div>
+        <span class="rm-status status-active">Em andamento</span>
+      </div>
+
+      <div class="rm-phase next">
+        <div class="rm-dot"><div class="rm-dot-inner"></div></div>
+        <div class="rm-quarter">Q4 2026</div>
+        <div class="rm-title">Escala</div>
+        <div class="rm-items">
+          <div class="rm-item">Matching automático</div>
+          <div class="rm-item">Todos os 6 programas</div>
+          <div class="rm-item">Motor de preços (PulseFlat)</div>
+          <div class="rm-item">Assinatura premium</div>
+          <div class="rm-item">App móvel (PWA)</div>
+        </div>
+        <span class="rm-status status-next">Próximo</span>
+      </div>
+
+      <div class="rm-phase future">
+        <div class="rm-dot"><div class="rm-dot-inner"></div></div>
+        <div class="rm-quarter">Q1 2027</div>
+        <div class="rm-title">Dados B2B</div>
+        <div class="rm-items">
+          <div class="rm-item">Índice PulseMilhas público</div>
+          <div class="rm-item">API para fintechs</div>
+          <div class="rm-item">Relatórios de mercado</div>
+          <div class="rm-item">Expansão para PT e Pontos</div>
+          <div class="rm-item">Dashboard analítico B2B</div>
+        </div>
+        <span class="rm-status status-future">Planejado</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── RISCOS ─── -->
+<section class="sec sec-alt" id="riscos">
+  <div class="container">
+    <div class="sec-label reveal">07 — Riscos</div>
+    <h2 class="sec-title reveal">Riscos conhecidos<br>e mitigações</h2>
+    <p class="sec-desc reveal">Transparência sobre os principais vetores de risco — regulatório, técnico e de mercado — com as mitigações planejadas.</p>
+
+    <div class="reveal" style="margin-top: 2.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden;">
+      <table class="risk-table">
+        <thead>
+          <tr>
+            <th style="width: 22%">Risco</th>
+            <th style="width: 10%">Nível</th>
+            <th style="width: 34%">Descrição</th>
+            <th style="width: 34%">Mitigação</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="risk-name">Regulatório</div></td>
+            <td><span class="risk-badge risk-high">Alto</span></td>
+            <td>Programas de fidelidade proíbem contratualmente a venda de pontos. Risco de bloqueio de contas dos usuários.</td>
+            <td>Posicionar como "intermediação de transferência entre membros". Consulta jurídica antes do lançamento. Monitorar precedentes do MaxMilhas e Voe Fácil.</td>
+          </tr>
+          <tr>
+            <td><div class="risk-name">Fraude de transferência</div></td>
+            <td><span class="risk-badge risk-high">Alto</span></td>
+            <td>Vendedor cancela ou não executa a transferência após receber a confirmação do match.</td>
+            <td>Escrow obrigatório. KYC + biometria. Score público com penalidade severa por cancelamento. Fundo de garantia para casos extremos.</td>
+          </tr>
+          <tr>
+            <td><div class="risk-name">Mudança de API dos programas</div></td>
+            <td><span class="risk-badge risk-medium">Médio</span></td>
+            <td>Programas alteram endpoints sem aviso, quebrando scrapers de monitoramento de transferência.</td>
+            <td>Confirmação da transferência feita pelo comprador, não por scraping. Monitoramento de disponibilidade com fallback manual.</td>
+          </tr>
+          <tr>
+            <td><div class="risk-name">Liquidez inicial</div></td>
+            <td><span class="risk-badge risk-medium">Médio</span></td>
+            <td>Problema do ovo e galinha: sem compradores, vendedores não listam. Sem ofertas, compradores não chegam.</td>
+            <td>Abrir acesso primeiro para vendedores (via waitlist gold). Agregar demanda com compra de mídia focal. Considerar seed liquidity comprando milhas próprias.</td>
+          </tr>
+          <tr>
+            <td><div class="risk-name">Concorrência direta</div></td>
+            <td><span class="risk-badge risk-medium">Médio</span></td>
+            <td>MaxMilhas ou Livelo lançar funcionalidade P2P, usando sua base de usuários existente.</td>
+            <td>Diferencial de dados (PulseFlat) é difícil de replicar. Foco em fee menor e transparência de precificação como moat.</td>
+          </tr>
+          <tr>
+            <td><div class="risk-name">Escopo de dados pessoais (LGPD)</div></td>
+            <td><span class="risk-badge risk-low">Baixo</span></td>
+            <td>Plataforma coleta CPF, dados bancários e histórico de transações — sujeita à LGPD e regulação de meios de pagamento.</td>
+            <td>DPO nomeado antes do lançamento. Criptografia em repouso e trânsito. Política de retenção mínima. Auditoria anual.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CONTEXTO / PRÓXIMOS PASSOS ─── -->
+<section class="sec" id="contexto">
+  <div class="container">
+    <div class="sec-label reveal">08 — Contexto</div>
+    <h2 class="sec-title reveal">PulseMilhas dentro<br>da PulseDataLabs</h2>
+    <p class="sec-desc reveal">O produto não está isolado — herda infraestrutura, pipeline de dados e posicionamento de mercado já construídos.</p>
+
+    <div class="context-grid reveal">
+      <div class="ctx-card">
+        <div class="ctx-card-label">Sinergias com produtos existentes</div>
+        <div class="ctx-card-title">Por que PulseDataLabs?</div>
+        <div class="ctx-items">
+          <div class="ctx-item">
+            <span class="ctx-bullet"></span>
+            <span><strong style="color:var(--text)">PulseFlat</strong> já entrega câmbio, IPCA, Selic e cotações em tempo real — alimenta o motor de preços do PulseMilhas sem custo adicional de infraestrutura.</span>
+          </div>
+          <div class="ctx-item">
+            <span class="ctx-bullet"></span>
+            <span><strong style="color:var(--text)">PulseRatings</strong> demonstra capacidade de B2B de dados financeiros — mesmo modelo que o Índice PulseMilhas seguirá.</span>
+          </div>
+          <div class="ctx-item">
+            <span class="ctx-bullet"></span>
+            <span>Stack Python já em uso: scrapers, pipelines e GitHub Actions reduzem o tempo de desenvolvimento do loyalty data layer.</span>
+          </div>
+          <div class="ctx-item">
+            <span class="ctx-bullet"></span>
+            <span>Marca PulseDataLabs carrega credibilidade de dados — diferencial de posicionamento em relação a marketplaces sem fundação técnica.</span>
+          </div>
+        </div>
+      </div>
+      <div class="ctx-card">
+        <div class="ctx-card-label">Próximos passos imediatos</div>
+        <div class="ctx-card-title">O que fazer agora</div>
+        <div class="ctx-items">
+          <div class="ctx-item">
+            <span class="ctx-bullet gold"></span>
+            <span><strong style="color:var(--text)">Validação de demanda</strong> — entrevistar 15 pessoas que já compraram/venderam milhas informalmente. Entender disposição de pagar taxa de plataforma.</span>
+          </div>
+          <div class="ctx-item">
+            <span class="ctx-bullet gold"></span>
+            <span><strong style="color:var(--text)">Consulta jurídica</strong> — entender risco contratual com os programas e estruturar o modelo legal antes de qualquer transação real.</span>
+          </div>
+          <div class="ctx-item">
+            <span class="ctx-bullet gold"></span>
+            <span><strong style="color:var(--text)">Análise de concorrência</strong> — mapear lacunas do MaxMilhas e Voe Fácil. Encontrar o posicionamento de diferenciação defensável.</span>
+          </div>
+          <div class="ctx-item">
+            <span class="ctx-bullet gold"></span>
+            <span><strong style="color:var(--text)">MVP técnico</strong> — após validação, construir cadastro + escrow Pix + listagem manual. Apenas Smiles e Latam Pass no início.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="pulse-dot"></span>
+        PulseMilhas
+        <span style="font-family:var(--font-mono);font-size:.58rem;color:var(--text3);font-weight:400;margin-left:.4rem;letter-spacing:.06em;">by PulseDataLabs</span>
+      </div>
+      <ul class="footer-links">
+        <li><a href="index.html">← Voltar ao produto</a></li>
+        <li><a href="https://github.com/PulseDataLabs" target="_blank">GitHub</a></li>
+        <li><a href="mailto:pulsedatalabs@gmail.com">Contato</a></li>
+      </ul>
+      <div class="footer-copy">
+        © <span id="year"></span> PulseDataLabs · Documento de visão técnica
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+/* ─── Reveal on scroll ─── */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ─── Revenue projection chart ─── */
+const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+const months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+const txFee   = [0, 0, 2.1, 4.8, 9.2, 14.5, 21.0, 28.4, 36.2, 45.1, 54.8, 65.3];
+const premium = [0, 0, 0.2, 0.6, 1.1, 1.8, 2.7, 3.8, 5.1, 6.6, 8.3, 10.2];
+const b2b     = [0, 0, 0,   0,   0,   0,   0,   1.2, 2.0, 3.0, 4.2, 5.8];
+
+new Chart(revenueCtx, {
+  type: 'bar',
+  data: {
+    labels: months,
+    datasets: [
+      {
+        label: 'Taxa de transação (R$ k)',
+        data: txFee,
+        backgroundColor: 'rgba(0,212,255,0.55)',
+        borderColor: '#00d4ff',
+        borderWidth: 1,
+        borderRadius: 4,
+        stack: 'rev',
+      },
+      {
+        label: 'Assinatura premium (R$ k)',
+        data: premium,
+        backgroundColor: 'rgba(240,180,41,0.55)',
+        borderColor: '#f0b429',
+        borderWidth: 1,
+        borderRadius: 4,
+        stack: 'rev',
+      },
+      {
+        label: 'Índice B2B (R$ k)',
+        data: b2b,
+        backgroundColor: 'rgba(0,229,160,0.55)',
+        borderColor: '#00e5a0',
+        borderWidth: 1,
+        borderRadius: 4,
+        stack: 'rev',
+      },
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        labels: {
+          color: '#8fa3b8',
+          font: { family: "'JetBrains Mono', monospace", size: 11 },
+          boxWidth: 12, boxHeight: 12,
+        }
+      },
+      tooltip: {
+        backgroundColor: '#141c26',
+        titleColor: '#e8eef4',
+        bodyColor: '#8fa3b8',
+        borderColor: '#1e2d3d',
+        borderWidth: 1,
+        padding: 12,
+        callbacks: {
+          label: ctx => ` ${ctx.dataset.label}: R$ ${ctx.parsed.y.toFixed(1)}k`
+        }
+      }
+    },
+    scales: {
+      x: {
+        stacked: true,
+        ticks: { color: '#6a8096', font: { family: "'JetBrains Mono', monospace", size: 11 } },
+        grid: { color: 'rgba(30,45,61,0.5)' }
+      },
+      y: {
+        stacked: true,
+        ticks: {
+          color: '#6a8096',
+          font: { family: "'JetBrains Mono', monospace", size: 11 },
+          callback: v => 'R$ ' + v + 'k'
+        },
+        grid: { color: 'rgba(30,45,61,0.5)' }
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
