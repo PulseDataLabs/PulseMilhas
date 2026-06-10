@@ -1,5 +1,9 @@
 window.PULSEMILHAS_DASHBOARD = {
+<<<<<<< HEAD
   "timestamp": "2026-06-09T19:19:39.725538",
+=======
+  "timestamp": "2026-06-08T07:12:04.927397",
+>>>>>>> 0fa9ab6 (ajuste pagina inicial)
   "summary": {
     "total_programas": 9,
     "media_geral": 23.82375,
@@ -173,10 +177,13 @@ window.PULSEMILHAS_DASHBOARD = {
       {
         "data_captura": "2026-06-08",
         "valor_milhar": 29.0
+<<<<<<< HEAD
       },
       {
         "data_captura": "2026-06-09",
         "valor_milhar": 29.0
+=======
+>>>>>>> 0fa9ab6 (ajuste pagina inicial)
       }
     ],
     "TudoAzul": [
@@ -187,10 +194,13 @@ window.PULSEMILHAS_DASHBOARD = {
       {
         "data_captura": "2026-06-08",
         "valor_milhar": 14.0
+<<<<<<< HEAD
       },
       {
         "data_captura": "2026-06-09",
         "valor_milhar": 14.0
+=======
+>>>>>>> 0fa9ab6 (ajuste pagina inicial)
       }
     ],
     "Livelo": [
@@ -229,10 +239,13 @@ window.PULSEMILHAS_DASHBOARD = {
       {
         "data_captura": "2026-06-08",
         "valor_milhar": 17.3
+<<<<<<< HEAD
       },
       {
         "data_captura": "2026-06-09",
         "valor_milhar": 17.3
+=======
+>>>>>>> 0fa9ab6 (ajuste pagina inicial)
       }
     ],
     "Hotmilhas": [],
@@ -251,5 +264,9 @@ window.PULSEMILHAS_DASHBOARD = {
       }
     ]
   },
+<<<<<<< HEAD
   "records_total": 51
+=======
+  "records_total": 33
+>>>>>>> 0fa9ab6 (ajuste pagina inicial)
 };

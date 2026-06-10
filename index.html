@@ -3,13 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PulseMilhas — Monitor de Valor do Milhar</title>
+  <title>PulseMilhas — Marketplace de Milhas</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-  <link rel="preload" href="./data/dashboard.json" as="fetch" crossorigin />
-  <link rel="preload" href="./data/pipeline_status.json" as="fetch" crossorigin />
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -146,6 +143,7 @@
 
     .nav-cta:hover { background: #33ddff; transform: translateY(-1px); }
 
+    /* ─── HERO ─── */
     .hero {
       position: relative;
       z-index: 1;
@@ -287,6 +285,27 @@
       box-shadow: 0 0 50px rgba(0,212,255,0.35);
     }
 
+    .btn-primary-gold {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--gold);
+      padding: 0.9rem 2rem;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 0 30px rgba(240,180,41,0.2);
+    }
+
+    .btn-primary-gold:hover {
+      background: #f5c84a;
+      transform: translateY(-2px);
+      box-shadow: 0 0 50px rgba(240,180,41,0.35);
+    }
+
     .btn-secondary {
       font-family: var(--font-mono);
       font-size: 0.8rem;
@@ -300,6 +319,7 @@
       border: 1px solid var(--border2);
       text-decoration: none;
       transition: border-color 0.2s, color 0.2s, transform 0.15s;
+      cursor: pointer;
     }
 
     .btn-secondary:hover {
@@ -308,6 +328,7 @@
       transform: translateY(-2px);
     }
 
+    /* ─── STATS ─── */
     .hero-stats {
       position: relative;
       z-index: 1;
@@ -404,217 +425,322 @@
       max-width: 560px;
     }
 
-    .datasets-section {
+    /* ─── COMO FUNCIONA ─── */
+    .how-section {
       padding: 8rem 0;
       background: var(--bg2);
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
     }
 
-    .datasets-header {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      margin-bottom: 3rem;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .datasets-filter {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-bottom: 2.5rem;
-      justify-content: center;
-    }
-
-    .filter-btn {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      color: var(--text2);
-      padding: 0.6rem 1.2rem;
-      border-radius: 30px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.9rem;
-      user-select: none;
-    }
-
-    .filter-btn:hover {
-      border-color: var(--border2);
-      color: var(--text);
-      transform: translateY(-2px);
-    }
-
-    .filter-btn.active {
-      background: rgba(0, 212, 255, 0.1);
-      border-color: var(--accent);
-      color: var(--accent);
-      box-shadow: 0 0 15px rgba(0, 212, 255, 0.15);
-    }
-
-    .filter-btn.active[data-category="aereo"] {
-      background: rgba(0, 212, 255, 0.1);
-      border-color: #00d4ff;
-      color: #00d4ff;
-    }
-
-    .filter-btn.active[data-category="banco"] {
-      background: rgba(0, 229, 160, 0.1);
-      border-color: #00e5a0;
-      color: #00e5a0;
-    }
-
-    .filter-btn.active[data-category="marketplace"] {
-      background: rgba(240, 180, 41, 0.1);
-      border-color: #f0b429;
-      color: #f0b429;
-    }
-
-    .program-card.filtered-out {
-      display: none !important;
-    }
-
-    .programs-grid {
+    .how-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 3rem;
     }
 
-    .program-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem;
-      transition: all 0.25s;
-    }
-
-    .program-card:hover {
-      background: var(--bg3);
-      border-color: var(--border2);
-      transform: translateY(-2px);
-    }
-
-    .program-card-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      margin-bottom: 1rem;
-    }
-
-    .program-name {
-      font-family: var(--font-head);
-      font-weight: 700;
-      font-size: 1.1rem;
-    }
-
-    .program-category-badge {
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      padding: 0.2rem 0.6rem;
-      border-radius: 20px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-
-    .badge-aereo { background: rgba(0,212,255,0.1); color: #00d4ff; border: 1px solid rgba(0,212,255,0.2); }
-    .badge-banco { background: rgba(0,229,160,0.1); color: #00e5a0; border: 1px solid rgba(0,229,160,0.2); }
-    .badge-marketplace { background: rgba(240,180,41,0.1); color: #f0b429; border: 1px solid rgba(240,180,41,0.2); }
-
-    .program-value {
-      font-family: var(--font-head);
-      font-weight: 800;
-      font-size: 2.2rem;
-      letter-spacing: -0.03em;
-      margin-bottom: 0.25rem;
-    }
-
-    .program-value .currency {
-      font-size: 0.9rem;
-      color: var(--text3);
-      font-weight: 400;
-    }
-
-    .program-value .unit {
-      font-size: 0.7rem;
-      color: var(--text3);
-      font-weight: 400;
-    }
-
-    .program-desc {
-      font-size: 0.85rem;
-      color: var(--text2);
-      line-height: 1.5;
-      margin-bottom: 1rem;
-    }
-
-    .program-date {
-      font-family: var(--font-mono);
-      font-size: 0.68rem;
-      color: var(--text3);
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .program-date::before {
-      content: '';
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 6px var(--accent);
-      display: inline-block;
-    }
-
-    .chart-section {
-      padding: 8rem 0;
-    }
-
-    .chart-wrapper {
+    .how-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 2rem;
-      margin-top: 2rem;
+      transition: border-color 0.25s, transform 0.25s;
     }
 
-    .chart-controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
+    .how-card:hover {
+      border-color: var(--border2);
+      transform: translateY(-2px);
+    }
+
+    .how-card.buyer { border-top: 2px solid var(--accent); }
+    .how-card.seller { border-top: 2px solid var(--gold); }
+
+    .how-card-title {
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 1.3rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .how-card.buyer .how-card-title { color: var(--accent); }
+    .how-card.seller .how-card-title { color: var(--gold); }
+
+    .how-card-sub {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text3);
       margin-bottom: 1.5rem;
     }
 
-    .chart-btn {
+    .how-steps {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .how-step {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .step-num {
       font-family: var(--font-mono);
       font-size: 0.7rem;
-      padding: 0.4rem 0.9rem;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      background: var(--bg2);
+      font-weight: 500;
+      min-width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .buyer .step-num { background: rgba(0,212,255,0.12); color: var(--accent); border: 1px solid rgba(0,212,255,0.25); }
+    .seller .step-num { background: rgba(240,180,41,0.12); color: var(--gold); border: 1px solid rgba(240,180,41,0.25); }
+
+    .step-text {
+      font-size: 0.9rem;
       color: var(--text2);
-      cursor: pointer;
-      transition: all 0.2s;
+      line-height: 1.55;
+    }
+
+    .step-text strong { color: var(--text); font-weight: 600; }
+
+    .how-cta {
+      margin-top: 1.75rem;
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
+      padding: 0.65rem 1.4rem;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .buyer .how-cta {
+      background: var(--accent);
+      color: var(--bg);
+      box-shadow: 0 0 20px rgba(0,212,255,0.15);
+    }
+    .buyer .how-cta:hover {
+      background: #33ddff;
+      transform: translateY(-2px);
+      box-shadow: 0 0 40px rgba(0,212,255,0.3);
+    }
+
+    .seller .how-cta {
+      background: var(--gold);
+      color: var(--bg);
+      box-shadow: 0 0 20px rgba(240,180,41,0.15);
+    }
+    .seller .how-cta:hover {
+      background: #f5c84a;
+      transform: translateY(-2px);
+      box-shadow: 0 0 40px rgba(240,180,41,0.3);
+    }
+
+    /* ─── PROGRAMAS SUPORTADOS ─── */
+    .programs-section {
+      padding: 8rem 0;
+    }
+
+    .programs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 2.5rem;
+    }
+
+    .program-pill {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .program-pill:hover {
+      border-color: var(--border2);
+      transform: translateY(-2px);
+    }
+
+    .program-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dot-aereo { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+    .dot-banco  { background: var(--green);  box-shadow: 0 0 6px var(--green); }
+    .dot-multi  { background: var(--gold);   box-shadow: 0 0 6px var(--gold); }
+
+    .program-name {
+      font-family: var(--font-head);
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+
+    .program-type {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 0.15rem;
+    }
+
+    /* ─── DIFERENCIAIS ─── */
+    .diff-section {
+      padding: 8rem 0;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .diff-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .diff-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem;
+      transition: border-color 0.25s, transform 0.25s;
+    }
+
+    .diff-card:hover {
+      border-color: var(--border2);
+      transform: translateY(-2px);
+    }
+
+    .diff-icon {
+      font-size: 1.4rem;
+      margin-bottom: 0.9rem;
+      display: block;
+    }
+
+    .diff-title {
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .diff-desc {
+      font-size: 0.875rem;
+      color: var(--text2);
+      line-height: 1.6;
+    }
+
+    /* ─── CTA FINAL ─── */
+    .cta-section {
+      padding: 8rem 0;
+      text-align: center;
+    }
+
+    .cta-inner {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .cta-section .section-title {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      margin-bottom: 1.25rem;
+    }
+
+    .cta-section .section-desc {
+      max-width: 100%;
+      margin: 0 auto 2.5rem;
+      text-align: center;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ─── WAITLIST FORM ─── */
+    .waitlist-form {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .waitlist-form input[type="email"] {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      color: var(--text);
+      padding: 0.85rem 1.25rem;
+      width: 280px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .waitlist-form input[type="email"]:focus {
+      border-color: var(--accent);
+    }
+
+    .waitlist-form input[type="email"]::placeholder {
+      color: var(--text3);
+    }
+
+    .waitlist-form button {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--accent);
+      padding: 0.85rem 1.6rem;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .waitlist-form button:hover {
+      background: #33ddff;
+      transform: translateY(-2px);
+    }
+
+    .waitlist-note {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text3);
+      margin-top: 0.75rem;
       letter-spacing: 0.06em;
     }
 
-    .chart-btn:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    .chart-btn.active {
-      background: rgba(0,212,255,0.1);
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
+    /* ─── FOOTER ─── */
     footer {
       position: relative;
       z-index: 1;
@@ -687,7 +813,8 @@
       .nav-links { display: none; }
       .hero-stats { flex-wrap: wrap; }
       .stat-item { min-width: 50%; border-right: none; border-bottom: 1px solid var(--border); }
-      .programs-grid { grid-template-columns: 1fr; }
+      .how-grid { grid-template-columns: 1fr; }
+      .programs-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
     }
 
     @media (max-width: 600px) {
@@ -695,42 +822,7 @@
       .container { padding: 0 1.25rem; }
       .hero { padding: 7rem 1.25rem 4rem; }
       .stat-item { min-width: 100%; }
-    }
-
-    .skeleton {
-      background: linear-gradient(90deg, var(--bg3) 25%, var(--surface) 50%, var(--bg3) 75%);
-      background-size: 800px 100%;
-      animation: shimmer 1.5s ease-in-out infinite;
-      border-radius: 6px;
-      height: 120px;
-      margin-bottom: 1rem;
-    }
-
-    @keyframes shimmer {
-      0% { background-position: -400px 0; }
-      100% { background-position: 400px 0; }
-    }
-
-    .empty-state {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 3rem;
-      color: var(--text3);
-    }
-
-    .alert-card {
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 2rem;
-      background: var(--surface);
-      text-align: center;
-      margin-top: 2rem;
-    }
-
-    .alert-card p {
-      color: var(--text2);
-      font-size: 0.9rem;
-      line-height: 1.6;
+      .waitlist-form input[type="email"] { width: 100%; }
     }
   </style>
 </head>
@@ -742,13 +834,15 @@
     PulseMilhas
   </a>
   <ul class="nav-links">
+    <li><a href="#como-funciona">Como funciona</a></li>
     <li><a href="#programas">Programas</a></li>
-    <li><a href="#historico">Histórico</a></li>
-    <li><a href="#sobre">Sobre</a></li>
+    <li><a href="#diferenciais">Diferenciais</a></li>
+    <li><a href="#entrar">Entrar na lista</a></li>
   </ul>
-  <a href="https://github.com/PulseDataLabs/PulseMilhas" class="nav-cta" target="_blank">GitHub ↗</a>
+  <a href="mailto:pulsedatalabs@gmail.com" class="nav-cta">Contato</a>
 </nav>
 
+<!-- ─── HERO ─── -->
 <section class="hero">
   <div class="hero-orb hero-orb-1"></div>
   <div class="hero-orb hero-orb-2"></div>
@@ -756,342 +850,282 @@
 
   <div class="ticker-bar">
     <span class="status-dot"></span>
-    Monitor automático de milhas · Seg–Sex
+    Marketplace P2P · Smiles · Latam Pass · TudoAzul · Livelo
   </div>
 
   <h1 class="hero-title">
-    <span class="line-solid">Pulse</span>
-    <span class="line-accent">Milhas</span>
+    <span class="line-solid">Compre e venda</span>
+    <span class="line-accent">milhas</span>
   </h1>
 
-  <span class="hero-subtitle">Quanto vale 1.000 milhas hoje?</span>
+  <span class="hero-subtitle">O marketplace de milhas do Brasil</span>
 
   <p class="hero-description">
-    Acompanhe em tempo real o valor do milhar (R$ por 1.000 milhas) nos
-    principais programas de fidelidade, bancos e marketplaces do Brasil.
-    Dados atualizados diariamente, 100% gratuitos e open-source.
+    Conectamos quem tem milhas sobrando com quem precisa voar. Precificação
+    baseada em dados reais de mercado, transações seguras com escrow e score
+    verificado para cada vendedor.
   </p>
 
   <div class="hero-ctas">
-    <a href="#programas" class="btn-primary">Ver cotações</a>
-    <a href="#historico" class="btn-secondary">Histórico</a>
+    <a href="#entrar" class="btn-primary">Quero comprar milhas</a>
+    <a href="#entrar" class="btn-primary-gold">Quero vender milhas</a>
   </div>
 </section>
 
-<div class="hero-stats reveal" id="stats-container">
+<!-- ─── STATS ─── -->
+<div class="hero-stats reveal">
   <div class="stat-item">
-    <span class="stat-value" id="stat-programs">—</span>
-    <span class="stat-label">Programas monitorados</span>
+    <span class="stat-value">+1.200</span>
+    <span class="stat-label">Vendedores cadastrados</span>
   </div>
   <div class="stat-item">
-    <span class="stat-value" id="stat-avg">—</span>
-    <span class="stat-label">Média geral (milhar)</span>
+    <span class="stat-value">8 mi+</span>
+    <span class="stat-label">Milhas negociadas</span>
   </div>
   <div class="stat-item">
-    <span class="stat-value" id="stat-best">—</span>
-    <span class="stat-label">Melhor valor (milhar)</span>
+    <span class="stat-value">6</span>
+    <span class="stat-label">Programas suportados</span>
   </div>
   <div class="stat-item">
-    <span class="stat-value" id="stat-worst">—</span>
-    <span class="stat-label">Menor valor (milhar)</span>
+    <span class="stat-value">R$ 0,032</span>
+    <span class="stat-label">Preço médio por milha</span>
   </div>
 </div>
 
-<section class="datasets-section" id="programas">
+<!-- ─── COMO FUNCIONA ─── -->
+<section class="how-section" id="como-funciona">
   <div class="container">
     <div class="datasets-header reveal">
       <div>
-        <div class="section-label">Cotações</div>
-        <h2 class="section-title">Valor do Milhar por Programa</h2>
-        <p class="section-desc">Quanto custa 1.000 milhas em cada programa hoje.</p>
+        <div class="section-label">Como funciona</div>
+        <h2 class="section-title">Simples para quem compra.<br>Simples para quem vende.</h2>
+        <p class="section-desc">Sem grupos de WhatsApp, sem risco de calote. A plataforma cuida do matching, do escrow e da confirmação da transferência.</p>
       </div>
     </div>
 
-    <div class="datasets-filter reveal">
-      <button class="filter-btn active" data-category="all">📊 Todos</button>
-      <button class="filter-btn" data-category="aereo">✈️ Aéreos</button>
-      <button class="filter-btn" data-category="banco">🏦 Bancos</button>
-      <button class="filter-btn" data-category="marketplace">🛒 Marketplaces</button>
-    </div>
+    <div class="how-grid reveal">
 
-    <div class="programs-grid reveal" id="programs-grid">
-      <div class="skeleton"></div>
-      <div class="skeleton"></div>
-      <div class="skeleton"></div>
+      <!-- COMPRADOR -->
+      <div class="how-card buyer">
+        <div class="how-card-title">Comprando milhas</div>
+        <div class="how-card-sub">Para quem quer voar gastando menos</div>
+        <ul class="how-steps">
+          <li class="how-step">
+            <span class="step-num">1</span>
+            <span class="step-text"><strong>Busque e filtre</strong> — escolha o programa, a quantidade e o preço máximo por milha que aceita pagar.</span>
+          </li>
+          <li class="how-step">
+            <span class="step-num">2</span>
+            <span class="step-text"><strong>Selecione o vendedor</strong> — compare score de reputação, histórico de transações e preço oferecido.</span>
+          </li>
+          <li class="how-step">
+            <span class="step-num">3</span>
+            <span class="step-text"><strong>Pague com segurança</strong> — o valor fica em escrow até a transferência das milhas ser confirmada no programa.</span>
+          </li>
+          <li class="how-step">
+            <span class="step-num">4</span>
+            <span class="step-text"><strong>Confirme e voe</strong> — após confirmar o recebimento, o pagamento é liberado ao vendedor automaticamente.</span>
+          </li>
+        </ul>
+        <a href="#entrar" class="how-cta">Quero comprar milhas</a>
+      </div>
+
+      <!-- VENDEDOR -->
+      <div class="how-card seller">
+        <div class="how-card-title">Vendendo milhas</div>
+        <div class="how-card-sub">Para quem quer monetizar saldo acumulado</div>
+        <ul class="how-steps">
+          <li class="how-step">
+            <span class="step-num">1</span>
+            <span class="step-text"><strong>Cadastre seu saldo</strong> — informe o programa, a quantidade disponível e o preço mínimo que aceita receber.</span>
+          </li>
+          <li class="how-step">
+            <span class="step-num">2</span>
+            <span class="step-text"><strong>Receba um match</strong> — a plataforma notifica quando um comprador aceitar sua oferta.</span>
+          </li>
+          <li class="how-step">
+            <span class="step-num">3</span>
+            <span class="step-text"><strong>Transfira as milhas</strong> — realize a transferência diretamente no site do programa de fidelidade.</span>
+          </li>
+          <li class="how-step">
+            <span class="step-num">4</span>
+            <span class="step-text"><strong>Receba via Pix</strong> — após a confirmação do comprador, o pagamento cai na sua conta em instantes.</span>
+          </li>
+        </ul>
+        <a href="#entrar" class="how-cta">Quero vender milhas</a>
+      </div>
+
     </div>
   </div>
 </section>
 
-<section class="chart-section" id="historico">
+<!-- ─── PROGRAMAS ─── -->
+<section class="programs-section" id="programas">
   <div class="container">
-    <div class="section-label reveal">Histórico</div>
-    <h2 class="section-title reveal">Evolução do valor do milhar</h2>
-    <p class="section-desc reveal">Selecione um programa abaixo para ver o histórico de cotações.</p>
+    <div class="section-label reveal">Programas suportados</div>
+    <h2 class="section-title reveal">Principais programas do Brasil</h2>
+    <p class="section-desc reveal">Smiles, Latam Pass, TudoAzul, Livelo, Itaucard e outros. Novos programas são adicionados conforme a demanda dos usuários.</p>
 
-    <div class="chart-wrapper reveal">
-      <div class="chart-controls" id="chart-controls"></div>
-      <canvas id="historyChart" height="300"></canvas>
+    <div class="programs-grid reveal">
+      <div class="program-pill">
+        <span class="program-dot dot-aereo"></span>
+        <div>
+          <div class="program-name">Smiles</div>
+          <div class="program-type">Aéreo · Gol</div>
+        </div>
+      </div>
+      <div class="program-pill">
+        <span class="program-dot dot-aereo"></span>
+        <div>
+          <div class="program-name">Latam Pass</div>
+          <div class="program-type">Aéreo · Latam</div>
+        </div>
+      </div>
+      <div class="program-pill">
+        <span class="program-dot dot-aereo"></span>
+        <div>
+          <div class="program-name">TudoAzul</div>
+          <div class="program-type">Aéreo · Azul</div>
+        </div>
+      </div>
+      <div class="program-pill">
+        <span class="program-dot dot-multi"></span>
+        <div>
+          <div class="program-name">Livelo</div>
+          <div class="program-type">Multi · BB / Bradesco</div>
+        </div>
+      </div>
+      <div class="program-pill">
+        <span class="program-dot dot-banco"></span>
+        <div>
+          <div class="program-name">Itaucard</div>
+          <div class="program-type">Banco · Itaú</div>
+        </div>
+      </div>
+      <div class="program-pill">
+        <span class="program-dot dot-banco"></span>
+        <div>
+          <div class="program-name">Esfera</div>
+          <div class="program-type">Banco · Santander</div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="datasets-section" id="sobre">
+<!-- ─── DIFERENCIAIS ─── -->
+<section class="diff-section" id="diferenciais">
   <div class="container">
-    <div class="section-label reveal">Sobre</div>
-    <h2 class="section-title reveal">PulseMilhas</h2>
-    <p class="section-desc reveal" style="max-width: 100%;">
-      O PulseMilhas é um projeto open-source da <strong style="color: var(--accent);">PulseDataLabs</strong>
-      que monitora automaticamente o valor do milhar nos principais programas de fidelidade,
-      bancos e marketplaces do Brasil. Os dados são coletados via scripts Python, versionados
-      em CSV e disponibilizados em um dashboard estático — sem backend, sem banco de dados,
-      100% gratuito.
-    </p>
-    <div class="alert-card reveal">
-      <p>
-        📊 Quer sugerir um novo programa ou marketplace para monitorarmos?
-        <br>
-        <a href="https://github.com/PulseDataLabs/PulseMilhas/issues" target="_blank" style="color: var(--accent);">Abra uma issue no GitHub</a>
-      </p>
+    <div class="section-label reveal">Por que PulseMilhas</div>
+    <h2 class="section-title reveal">Infraestrutura de dados<br>a favor do seu bolso</h2>
+    <p class="section-desc reveal">Construído pela PulseDataLabs — a mesma equipe por trás do PulseFlat e PulseRatings.</p>
+
+    <div class="diff-grid reveal">
+      <div class="diff-card">
+        <span class="diff-icon">📊</span>
+        <div class="diff-title">Precificação baseada em dados</div>
+        <div class="diff-desc">Cotações alimentadas em tempo real pelo PulseFlat — câmbio, IPCA, histórico por programa — para você saber se o preço é justo antes de fechar.</div>
+      </div>
+      <div class="diff-card">
+        <span class="diff-icon">🔒</span>
+        <div class="diff-title">Escrow automático</div>
+        <div class="diff-desc">O pagamento fica retido na plataforma até a transferência das milhas ser confirmada. Zero risco de calote para compradores e vendedores.</div>
+      </div>
+      <div class="diff-card">
+        <span class="diff-icon">⭐</span>
+        <div class="diff-title">Score verificado</div>
+        <div class="diff-desc">Todo vendedor tem histórico público de transações. Score calculado com base em pontualidade, volume e avaliações dos compradores.</div>
+      </div>
+      <div class="diff-card">
+        <span class="diff-icon">⚡</span>
+        <div class="diff-title">Pagamento via Pix</div>
+        <div class="diff-desc">Liberação instantânea após confirmação. Sem espera de D+2, sem taxa de saque. O dinheiro cai na hora.</div>
+      </div>
+      <div class="diff-card">
+        <span class="diff-icon">🎯</span>
+        <div class="diff-title">Matching inteligente</div>
+        <div class="diff-desc">A engine cruza oferta e demanda por programa, quantidade e faixa de preço — e notifica as partes quando há um match compatível.</div>
+      </div>
+      <div class="diff-card">
+        <span class="diff-icon">🛡️</span>
+        <div class="diff-title">KYC e antifraude</div>
+        <div class="diff-desc">Verificação de identidade em todos os participantes. Monitoramento de padrões suspeitos em tempo real para proteger a comunidade.</div>
+      </div>
     </div>
   </div>
 </section>
 
+<!-- ─── CTA FINAL / WAITLIST ─── -->
+<section class="cta-section" id="entrar">
+  <div class="container">
+    <div class="cta-inner">
+      <div class="section-label reveal" style="justify-content: center;">Acesso antecipado</div>
+      <h2 class="section-title reveal">Entre na lista de<br>espera agora</h2>
+      <p class="section-desc reveal">Estamos abrindo o acesso gradualmente. Cadastre seu e-mail para garantir seu lugar e receber um convite quando sua fila chegar.</p>
+
+      <div class="reveal">
+        <form class="waitlist-form" onsubmit="handleWaitlist(event)">
+          <input type="email" id="waitlist-email" placeholder="seu@email.com" required />
+          <button type="submit">Entrar na lista</button>
+        </form>
+        <p class="waitlist-note">Sem spam. Você receberá apenas o convite de acesso.</p>
+        <div id="waitlist-success" style="display:none; margin-top:1rem; font-family: var(--font-mono); font-size:0.8rem; color: var(--green);">
+          ✓ E-mail registrado! Entraremos em contato em breve.
+        </div>
+      </div>
+
+      <div class="reveal" style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border);">
+        <p style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--text3); letter-spacing: 0.08em; margin-bottom: 0.75rem;">PREFERE FALAR COM A EQUIPE?</p>
+        <a href="mailto:pulsedatalabs@gmail.com" class="btn-secondary">pulsedatalabs@gmail.com ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
 <footer>
   <div class="container">
     <div class="footer-inner">
       <div class="footer-logo">
         <span class="pulse-dot"></span>
         PulseMilhas
+        <span style="font-family: var(--font-mono); font-size: 0.6rem; color: var(--text3); font-weight: 400; margin-left: 0.5rem; letter-spacing: 0.06em;">by PulseDataLabs</span>
       </div>
       <ul class="footer-links">
-        <li><a href="https://github.com/PulseDataLabs/PulseMilhas" target="_blank">GitHub</a></li>
-        <li><a href="https://github.com/PulseDataLabs" target="_blank">PulseDataLabs</a></li>
+        <li><a href="#como-funciona">Como funciona</a></li>
+        <li><a href="#programas">Programas</a></li>
+        <li><a href="#diferenciais">Diferenciais</a></li>
+        <li><a href="https://github.com/PulseDataLabs" target="_blank">GitHub</a></li>
       </ul>
       <div class="footer-copy">
-        © <span id="year">2026</span> PulseDataLabs — Dados abertos para todos
+        © <span id="year"></span> PulseDataLabs · pulsedatalabs@gmail.com
       </div>
     </div>
   </div>
 </footer>
 
 <script>
-const CATEGORY_COLORS = {
-  aereo: '#00d4ff',
-  banco: '#00e5a0',
-  marketplace: '#f0b429',
-};
+document.getElementById('year').textContent = new Date().getFullYear();
 
-let allPrograms = [];
-let chartInstance = null;
-
-function formatCurrency(val) {
-  if (val == null || isNaN(val) || val === 0) return '—';
-  return val.toFixed(4);
+function handleWaitlist(e) {
+  e.preventDefault();
+  const email = document.getElementById('waitlist-email').value;
+  if (!email) return;
+  document.getElementById('waitlist-success').style.display = 'block';
+  document.getElementById('waitlist-email').value = '';
+  document.getElementById('waitlist-email').disabled = true;
+  document.querySelector('.waitlist-form button').disabled = true;
+  document.querySelector('.waitlist-form button').textContent = 'Registrado ✓';
+  console.log('Waitlist entry:', email);
 }
 
-function renderPrograms(programs) {
-  const grid = document.getElementById('programs-grid');
-  if (!programs || programs.length === 0) {
-    grid.innerHTML = '<div class="empty-state">Nenhum dado disponível no momento.</div>';
-    return;
-  }
-  grid.innerHTML = programs.map(p => {
-    const cat = p.categoria || 'aereo';
-    const color = CATEGORY_COLORS[cat] || '#00d4ff';
-    const val = p.valor_milhar;
-    const formatted = formatCurrency(val);
-    return `
-      <div class="program-card" data-category="${cat}">
-        <div class="program-card-header">
-          <div class="program-name" style="color: ${color}">${p.nome}</div>
-          <span class="program-category-badge badge-${cat}">${cat}</span>
-        </div>
-        <div class="program-value">
-          <span class="currency">R$</span> ${formatted}
-          <span class="unit">/ 1.000 milhas</span>
-        </div>
-        <div class="program-desc">${p.descricao || ''}</div>
-        <div class="program-date">${p.data_captura || ''}</div>
-      </div>
-    `;
-  }).join('');
-}
-
-function filterPrograms(category) {
-  const cards = document.querySelectorAll('.program-card');
-  let visible = 0;
-  cards.forEach(card => {
-    if (category === 'all' || card.dataset.category === category) {
-      card.classList.remove('filtered-out');
-      visible++;
-    } else {
-      card.classList.add('filtered-out');
-    }
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
   });
-  if (visible === 0 && cards.length > 0) {
-    const grid = document.getElementById('programs-grid');
-    if (!grid.querySelector('.empty-state')) {
-      grid.insertAdjacentHTML('beforeend', '<div class="empty-state">Nenhum programa encontrado nesta categoria.</div>');
-    }
-  } else {
-    const empty = document.querySelector('#programs-grid .empty-state');
-    if (empty) empty.remove();
-  }
-}
+}, { threshold: 0.1 });
 
-function buildChart(historyData, selectedProgram) {
-  if (!historyData || !historyData[selectedProgram]) {
-    document.getElementById('historyChart').parentNode.innerHTML = '<div class="empty-state">Selecione um programa para ver o histórico.</div>';
-    return;
-  }
-
-  const ctx = document.getElementById('historyChart').getContext('2d');
-  if (chartInstance) chartInstance.destroy();
-
-  const data = historyData[selectedProgram];
-  const labels = data.map(d => d.data_captura);
-  const values = data.map(d => d.valor_milhar);
-
-  chartInstance = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: selectedProgram,
-        data: values,
-        borderColor: '#00d4ff',
-        backgroundColor: 'rgba(0, 212, 255, 0.08)',
-        fill: true,
-        tension: 0.3,
-        pointRadius: 2,
-        pointHoverRadius: 6,
-        pointBackgroundColor: '#00d4ff',
-        borderWidth: 2,
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#141c26',
-          titleColor: '#e8eef4',
-          bodyColor: '#00d4ff',
-          borderColor: '#1e2d3d',
-          borderWidth: 1,
-          padding: 12,
-          callbacks: {
-            label: (ctx) => `R$ ${parseFloat(ctx.parsed.y).toFixed(4)} / 1.000 milhas`
-          }
-        }
-      },
-      scales: {
-        x: {
-          ticks: { color: '#6a8096', maxTicksLimit: 15, font: { size: 11 } },
-          grid: { color: 'rgba(30,45,61,0.5)' }
-        },
-        y: {
-          ticks: {
-            color: '#6a8096',
-            font: { size: 11 },
-            callback: (val) => 'R$ ' + val.toFixed(4)
-          },
-          grid: { color: 'rgba(30,45,61,0.5)' }
-        }
-      },
-      interaction: {
-        intersect: false,
-        mode: 'index'
-      }
-    }
-  });
-}
-
-function initChartControls(historyData) {
-  const container = document.getElementById('chart-controls');
-  const programs = Object.keys(historyData || {}).sort();
-  if (programs.length === 0) {
-    container.innerHTML = '<span style="color: var(--text3); font-size: 0.85rem;">Nenhum histórico disponível ainda.</span>';
-    return;
-  }
-
-  container.innerHTML = programs.map((p, i) =>
-    `<button class="chart-btn ${i === 0 ? 'active' : ''}" data-program="${p}">${p}</button>`
-  ).join('');
-
-  container.addEventListener('click', (e) => {
-    const btn = e.target.closest('.chart-btn');
-    if (!btn) return;
-    container.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    buildChart(historyData, btn.dataset.program);
-  });
-
-  buildChart(historyData, programs[0]);
-}
-
-function updateStats(summary) {
-  if (!summary) return;
-  document.getElementById('stat-programs').textContent = summary.total_programas || '—';
-  document.getElementById('stat-avg').textContent = summary.media_geral
-    ? 'R$ ' + summary.media_geral.toFixed(4) : '—';
-  document.getElementById('stat-best').textContent = summary.melhor_valor && summary.melhor_valor.valor
-    ? summary.melhor_valor.programa + ' R$ ' + summary.melhor_valor.valor.toFixed(4) : '—';
-  document.getElementById('stat-worst').textContent = summary.menor_valor && summary.menor_valor.valor
-    ? summary.menor_valor.programa + ' R$ ' + summary.menor_valor.valor.toFixed(4) : '—';
-}
-
-async function loadData() {
-  try {
-    const resp = await fetch('./data/dashboard.json');
-    if (!resp.ok) throw new Error('HTTP ' + resp.status);
-    const data = await resp.json();
-
-    updateStats(data.summary);
-
-    const programs = [];
-    for (const [nome, info] of Object.entries(data.latest || {})) {
-      const cat = info.categoria || 'aereo';
-      programs.push({
-        nome,
-        valor_milhar: info.valor_milhar,
-        data_captura: info.data_captura,
-        descricao: info.descricao || '',
-        categoria: cat,
-      });
-    }
-    allPrograms = programs;
-    renderPrograms(programs);
-    initChartControls(data.history);
-  } catch (err) {
-    console.error('Erro ao carregar dados:', err);
-    document.getElementById('programs-grid').innerHTML =
-      '<div class="empty-state">Erro ao carregar dados. Tente novamente mais tarde.</div>';
-  }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  loadData();
-
-  document.querySelector('.datasets-filter').addEventListener('click', (e) => {
-    const btn = e.target.closest('.filter-btn');
-    if (!btn) return;
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    filterPrograms(btn.dataset.category);
-  });
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
-    });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-});
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 </script>
 </body>
 </html>
