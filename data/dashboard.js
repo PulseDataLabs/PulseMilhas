@@ -1,5 +1,5 @@
 window.PULSEMILHAS_DASHBOARD = {
-  "timestamp": "2026-06-16T15:53:49.421836",
+  "timestamp": "2026-06-16T19:51:35.060212",
   "summary": {
     "total_programas": 9,
     "media_geral": 23.82375,
@@ -372,7 +372,7 @@ window.PULSEMILHAS_DASHBOARD = {
       },
       {
         "data_captura": "2026-06-16",
-        "valor_milhar": 17.0
+        "valor_milhar": 16.7
       }
     ],
     "Hotmilhas": [],
