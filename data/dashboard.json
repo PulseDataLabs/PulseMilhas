@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-06-16T10:26:24.825660",
+  "timestamp": "2026-06-16T15:53:49.421836",
   "summary": {
     "total_programas": 9,
     "media_geral": 23.82375,
@@ -372,7 +372,7 @@
       },
       {
         "data_captura": "2026-06-16",
-        "valor_milhar": 17.3
+        "valor_milhar": 17.0
       }
     ],
     "Hotmilhas": [],
