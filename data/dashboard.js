@@ -1,5 +1,5 @@
 window.PULSEMILHAS_DASHBOARD = {
-  "timestamp": "2026-06-23T14:13:07.049057",
+  "timestamp": "2026-06-23T19:09:17.609791",
   "summary": {
     "total_programas": 9,
     "media_geral": 23.82375,
@@ -296,7 +296,7 @@ window.PULSEMILHAS_DASHBOARD = {
       },
       {
         "data_captura": "2026-06-23",
-        "valor_milhar": 29.3
+        "valor_milhar": 28.8
       }
     ],
     "TudoAzul": [
