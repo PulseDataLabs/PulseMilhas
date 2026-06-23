@@ -1,38 +1,38 @@
 window.PULSEMILHAS_LAST_UPDATES = {
   "firstclass.csv": {
     "min": "2026-06-07",
-    "max": "2026-06-22"
+    "max": "2026-06-23"
   },
   "itau_personnalite.csv": {
     "min": "2026-06-07",
-    "max": "2026-06-22"
+    "max": "2026-06-23"
   },
   "bradesco_estrelas.csv": {
     "min": "2026-06-07",
-    "max": "2026-06-22"
+    "max": "2026-06-23"
   },
   "livelo.csv": {
     "min": "2026-06-07",
-    "max": "2026-06-22"
+    "max": "2026-06-23"
   },
   "maxmilhas.csv": {
     "min": "2026-06-08",
-    "max": "2026-06-22"
+    "max": "2026-06-23"
   },
   "cotacaomilhas.csv": {
     "min": "2026-06-07",
-    "max": "2026-06-22"
+    "max": "2026-06-23"
   },
   "smiles.csv": {
     "min": "2026-06-07",
-    "max": "2026-06-22"
+    "max": "2026-06-23"
   },
   "hotmilhas.csv": {
     "min": "2026-06-07",
-    "max": "2026-06-22"
+    "max": "2026-06-23"
   },
   "latam_pass.csv": {
     "min": "2026-06-07",
-    "max": "2026-06-22"
+    "max": "2026-06-23"
   }
 };
