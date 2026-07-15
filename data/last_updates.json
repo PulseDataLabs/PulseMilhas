@@ -22,5 +22,17 @@
   "latam_pass.csv": {
     "min": "2026-06-07",
     "max": "2026-07-15"
+  },
+  "firstclass.csv": {
+    "min": "2026-06-07",
+    "max": "2026-07-15"
+  },
+  "itau_personnalite.csv": {
+    "min": "2026-06-07",
+    "max": "2026-07-15"
+  },
+  "hotmilhas.csv": {
+    "min": "2026-06-07",
+    "max": "2026-07-15"
   }
 }
