@@ -29,7 +29,7 @@ window.PULSEMILHAS_LAST_UPDATES = {
   },
   "smiles.csv": {
     "min": "2026-06-07",
-    "max": "2026-08-11"
+    "max": "2026-08-12"
   },
   "hotmilhas.csv": {
     "min": "2026-06-07",
