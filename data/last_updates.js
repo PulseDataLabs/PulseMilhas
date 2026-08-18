@@ -1,7 +1,7 @@
 window.PULSEMILHAS_LAST_UPDATES = {
   "cotacaomilhas.csv": {
     "min": "2026-06-07",
-    "max": "2026-08-17"
+    "max": "2026-08-18"
   },
   "latam_pass.csv": {
     "min": "2026-06-07",
