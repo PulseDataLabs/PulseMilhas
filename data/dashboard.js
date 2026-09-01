@@ -1,5 +1,5 @@
 window.PULSEMILHAS_DASHBOARD = {
-  "timestamp": "2026-08-31T13:36:28.211067",
+  "timestamp": "2026-08-31T21:17:49.086627",
   "summary": {
     "total_programas": 9,
     "media_geral": 23.82375,
