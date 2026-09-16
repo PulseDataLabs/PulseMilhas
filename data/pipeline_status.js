@@ -1,6 +1,6 @@
 window.PULSEMILHAS_PIPELINE_STATUS = {
-  "timestamp": "2026-09-16T10:57:40.050021",
-  "elapsed_seconds": 31.893776416778564,
+  "timestamp": "2026-09-16T15:36:11.137001",
+  "elapsed_seconds": 31.548099517822266,
   "status": "success",
   "summary": {
     "total": 9,
@@ -11,57 +11,57 @@ window.PULSEMILHAS_PIPELINE_STATUS = {
   "scrapers": {
     "firstclass": {
       "status": "success",
-      "elapsed_seconds": 0.4523293972015381,
+      "elapsed_seconds": 0.36309099197387695,
       "error": null,
-      "timestamp": "2026-09-16T10:57:40.050100"
+      "timestamp": "2026-09-16T15:36:11.137111"
     },
     "itau_personnalite": {
       "status": "success",
-      "elapsed_seconds": 0.38960862159729004,
+      "elapsed_seconds": 0.0684969425201416,
       "error": null,
-      "timestamp": "2026-09-16T10:57:40.050100"
+      "timestamp": "2026-09-16T15:36:11.137111"
     },
     "bradesco_estrelas": {
       "status": "success",
-      "elapsed_seconds": 1.2102737426757812,
+      "elapsed_seconds": 0.9383082389831543,
       "error": null,
-      "timestamp": "2026-09-16T10:57:40.050100"
+      "timestamp": "2026-09-16T15:36:11.137111"
     },
     "livelo": {
       "status": "success",
-      "elapsed_seconds": 1.0493764877319336,
+      "elapsed_seconds": 0.7802889347076416,
       "error": null,
-      "timestamp": "2026-09-16T10:57:40.050100"
+      "timestamp": "2026-09-16T15:36:11.137111"
     },
     "maxmilhas": {
       "status": "success",
-      "elapsed_seconds": 1.435633897781372,
+      "elapsed_seconds": 0.5866293907165527,
       "error": null,
-      "timestamp": "2026-09-16T10:57:40.050100"
+      "timestamp": "2026-09-16T15:36:11.137111"
     },
     "cotacaomilhas": {
       "status": "success",
-      "elapsed_seconds": 2.5972578525543213,
+      "elapsed_seconds": 2.258194923400879,
       "error": null,
-      "timestamp": "2026-09-16T10:57:40.050100"
+      "timestamp": "2026-09-16T15:36:11.137111"
     },
     "smiles": {
       "status": "success",
-      "elapsed_seconds": 0.7598507404327393,
+      "elapsed_seconds": 0.5498642921447754,
       "error": null,
-      "timestamp": "2026-09-16T10:57:40.050100"
+      "timestamp": "2026-09-16T15:36:11.137111"
     },
     "hotmilhas": {
       "status": "success",
-      "elapsed_seconds": 0.6904318332672119,
+      "elapsed_seconds": 0.6799042224884033,
       "error": null,
-      "timestamp": "2026-09-16T10:57:40.050100"
+      "timestamp": "2026-09-16T15:36:11.137111"
     },
     "latam_pass": {
       "status": "success",
-      "elapsed_seconds": 31.20086097717285,
+      "elapsed_seconds": 31.113709449768066,
       "error": null,
-      "timestamp": "2026-09-16T10:57:40.050100"
+      "timestamp": "2026-09-16T15:36:11.137111"
     }
   },
   "drifts": {}
