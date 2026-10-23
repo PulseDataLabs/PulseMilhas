@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-23T15:49:41.512714",
+  "timestamp": "2026-10-23T20:42:44.098100",
   "summary": {
     "total_programas": 9,
     "media_geral": 23.82375,
@@ -1758,7 +1758,7 @@
       },
       {
         "data_captura": "2026-10-23",
-        "valor_milhar": 16.0
+        "valor_milhar": 16.5
       }
     ],
     "Livelo": [
@@ -2976,7 +2976,7 @@
       },
       {
         "data_captura": "2026-10-23",
-        "valor_milhar": 17.4
+        "valor_milhar": 17.8
       }
     ],
     "Hotmilhas": [],
