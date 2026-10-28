@@ -1,5 +1,5 @@
 window.PULSEMILHAS_DASHBOARD = {
-  "timestamp": "2026-10-27T12:03:59.899124",
+  "timestamp": "2026-10-27T21:11:23.807789",
   "summary": {
     "total_programas": 9,
     "media_geral": 23.82375,
@@ -1790,7 +1790,7 @@ window.PULSEMILHAS_DASHBOARD = {
       },
       {
         "data_captura": "2026-10-27",
-        "valor_milhar": 16.5
+        "valor_milhar": 16.7
       }
     ],
     "Livelo": [
