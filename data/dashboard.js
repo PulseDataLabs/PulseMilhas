@@ -1,5 +1,5 @@
 window.PULSEMILHAS_DASHBOARD = {
-  "timestamp": "2026-11-03T13:46:18.887543",
+  "timestamp": "2026-11-03T21:59:53.604658",
   "summary": {
     "total_programas": 9,
     "media_geral": 23.82375,
@@ -1436,7 +1436,7 @@ window.PULSEMILHAS_DASHBOARD = {
       },
       {
         "data_captura": "2026-11-03",
-        "valor_milhar": 28.2
+        "valor_milhar": 26.75
       }
     ],
     "TudoAzul": [
@@ -1870,7 +1870,7 @@ window.PULSEMILHAS_DASHBOARD = {
       },
       {
         "data_captura": "2026-11-03",
-        "valor_milhar": 16.9
+        "valor_milhar": 17.6
       }
     ],
     "Livelo": [
@@ -3172,7 +3172,7 @@ window.PULSEMILHAS_DASHBOARD = {
       },
       {
         "data_captura": "2026-11-03",
-        "valor_milhar": 18.0
+        "valor_milhar": 18.77
       }
     ],
     "Hotmilhas": [],
