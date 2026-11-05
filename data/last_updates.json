@@ -2,5 +2,37 @@
   "latam_pass.csv": {
     "min": "2026-06-07",
     "max": "2026-11-04"
+  },
+  "firstclass.csv": {
+    "min": "2026-06-07",
+    "max": "2026-11-04"
+  },
+  "itau_personnalite.csv": {
+    "min": "2026-06-07",
+    "max": "2026-11-04"
+  },
+  "bradesco_estrelas.csv": {
+    "min": "2026-06-07",
+    "max": "2026-11-04"
+  },
+  "hotmilhas.csv": {
+    "min": "2026-06-07",
+    "max": "2026-11-04"
+  },
+  "cotacaomilhas.csv": {
+    "min": "2026-06-07",
+    "max": "2026-11-04"
+  },
+  "livelo.csv": {
+    "min": "2026-06-07",
+    "max": "2026-11-04"
+  },
+  "maxmilhas.csv": {
+    "min": "2026-06-08",
+    "max": "2026-11-04"
+  },
+  "smiles.csv": {
+    "min": "2026-06-07",
+    "max": "2026-11-04"
   }
 }
