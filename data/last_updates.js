@@ -33,6 +33,6 @@ window.PULSEMILHAS_LAST_UPDATES = {
   },
   "hotmilhas.csv": {
     "min": "2026-06-07",
-    "max": "2026-11-17"
+    "max": "2026-11-18"
   }
 };
