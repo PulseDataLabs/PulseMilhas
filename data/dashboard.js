@@ -1,5 +1,5 @@
 window.PULSEMILHAS_DASHBOARD = {
-  "timestamp": "2026-11-19T22:59:09.292614",
+  "timestamp": "2026-11-20T14:27:37.627846",
   "summary": {
     "total_programas": 9,
     "media_geral": 23.82375,
@@ -15,55 +15,55 @@ window.PULSEMILHAS_DASHBOARD = {
   "latest": {
     "Azul Interline": {
       "valor_milhar": 15.6,
-      "data_captura": "2026-11-19",
+      "data_captura": "2026-11-20",
       "categoria": "marketplace",
       "descricao": "Azul Interline (Azul Viagens) — R$ 15,60/milheiro"
     },
     "Bradesco Estrelas": {
       "valor_milhar": 25.0,
-      "data_captura": "2026-11-19",
+      "data_captura": "2026-11-20",
       "categoria": "banco",
       "descricao": "Valor da estrela: R$ 0.025"
     },
     "Hotmilhas": {
       "valor_milhar": 0.0,
-      "data_captura": "2026-11-19",
+      "data_captura": "2026-11-20",
       "categoria": "marketplace",
       "descricao": "Indisponível"
     },
     "Itaú Personnalité": {
       "valor_milhar": 30.0,
-      "data_captura": "2026-11-19",
+      "data_captura": "2026-11-20",
       "categoria": "banco",
       "descricao": "Valor do ponto: R$ 0.03 | Taxa conversão: 1.0"
     },
     "Latam Pass": {
       "valor_milhar": 23.49,
-      "data_captura": "2026-11-19",
+      "data_captura": "2026-11-20",
       "categoria": "marketplace",
       "descricao": "Latam Pass (Latam) — R$ 23,49/milheiro"
     },
     "Livelo": {
       "valor_milhar": 18.0,
-      "data_captura": "2026-11-19",
+      "data_captura": "2026-11-20",
       "categoria": "marketplace",
       "descricao": "Livelo (Multi-bandeiras) — R$ 18,00/milheiro"
     },
     "Smiles": {
       "valor_milhar": 15.48,
-      "data_captura": "2026-11-19",
+      "data_captura": "2026-11-20",
       "categoria": "marketplace",
       "descricao": "Smiles (Gol) — R$ 15,48/milheiro"
     },
     "TAP Miles & Go": {
       "valor_milhar": 41.25,
-      "data_captura": "2026-11-19",
+      "data_captura": "2026-11-20",
       "categoria": "marketplace",
       "descricao": "TAP Miles & Go (TAP Portugal) — R$ 41,25/milheiro"
     },
     "TudoAzul": {
       "valor_milhar": 21.77,
-      "data_captura": "2026-11-19",
+      "data_captura": "2026-11-20",
       "categoria": "marketplace",
       "descricao": "TudoAzul (Azul) — R$ 21,77/milheiro"
     }
@@ -76,13 +76,13 @@ window.PULSEMILHAS_DASHBOARD = {
         {
           "nome": "Bradesco Estrelas",
           "valor_milhar": 25.0,
-          "data_captura": "2026-11-19",
+          "data_captura": "2026-11-20",
           "descricao": "Valor da estrela: R$ 0.025"
         },
         {
           "nome": "Itaú Personnalité",
           "valor_milhar": 30.0,
-          "data_captura": "2026-11-19",
+          "data_captura": "2026-11-20",
           "descricao": "Valor do ponto: R$ 0.03 | Taxa conversão: 1.0"
         }
       ]
@@ -94,43 +94,43 @@ window.PULSEMILHAS_DASHBOARD = {
         {
           "nome": "Azul Interline",
           "valor_milhar": 15.6,
-          "data_captura": "2026-11-19",
+          "data_captura": "2026-11-20",
           "descricao": "Azul Interline (Azul Viagens) — R$ 15,60/milheiro"
         },
         {
           "nome": "Hotmilhas",
           "valor_milhar": 0.0,
-          "data_captura": "2026-11-19",
+          "data_captura": "2026-11-20",
           "descricao": "Indisponível"
         },
         {
           "nome": "Latam Pass",
           "valor_milhar": 23.49,
-          "data_captura": "2026-11-19",
+          "data_captura": "2026-11-20",
           "descricao": "Latam Pass (Latam) — R$ 23,49/milheiro"
         },
         {
           "nome": "Livelo",
           "valor_milhar": 18.0,
-          "data_captura": "2026-11-19",
+          "data_captura": "2026-11-20",
           "descricao": "Livelo (Multi-bandeiras) — R$ 18,00/milheiro"
         },
         {
           "nome": "Smiles",
           "valor_milhar": 15.48,
-          "data_captura": "2026-11-19",
+          "data_captura": "2026-11-20",
           "descricao": "Smiles (Gol) — R$ 15,48/milheiro"
         },
         {
           "nome": "TAP Miles & Go",
           "valor_milhar": 41.25,
-          "data_captura": "2026-11-19",
+          "data_captura": "2026-11-20",
           "descricao": "TAP Miles & Go (TAP Portugal) — R$ 41,25/milheiro"
         },
         {
           "nome": "TudoAzul",
           "valor_milhar": 21.77,
-          "data_captura": "2026-11-19",
+          "data_captura": "2026-11-20",
           "descricao": "TudoAzul (Azul) — R$ 21,77/milheiro"
         }
       ]
@@ -617,6 +617,10 @@ window.PULSEMILHAS_DASHBOARD = {
       {
         "data_captura": "2026-11-19",
         "valor_milhar": 25.0
+      },
+      {
+        "data_captura": "2026-11-20",
+        "valor_milhar": 25.0
       }
     ],
     "TAP Miles & Go": [
@@ -1098,6 +1102,10 @@ window.PULSEMILHAS_DASHBOARD = {
       },
       {
         "data_captura": "2026-11-19",
+        "valor_milhar": 41.25
+      },
+      {
+        "data_captura": "2026-11-20",
         "valor_milhar": 41.25
       }
     ],
@@ -1581,6 +1589,10 @@ window.PULSEMILHAS_DASHBOARD = {
       {
         "data_captura": "2026-11-19",
         "valor_milhar": 28.2
+      },
+      {
+        "data_captura": "2026-11-20",
+        "valor_milhar": 28.2
       }
     ],
     "TudoAzul": [
@@ -2062,6 +2074,10 @@ window.PULSEMILHAS_DASHBOARD = {
       },
       {
         "data_captura": "2026-11-19",
+        "valor_milhar": 16.2
+      },
+      {
+        "data_captura": "2026-11-20",
         "valor_milhar": 16.2
       }
     ],
@@ -2545,6 +2561,10 @@ window.PULSEMILHAS_DASHBOARD = {
       {
         "data_captura": "2026-11-19",
         "valor_milhar": 18.0
+      },
+      {
+        "data_captura": "2026-11-20",
+        "valor_milhar": 18.0
       }
     ],
     "Azul Interline": [
@@ -3027,6 +3047,10 @@ window.PULSEMILHAS_DASHBOARD = {
       {
         "data_captura": "2026-11-19",
         "valor_milhar": 15.6
+      },
+      {
+        "data_captura": "2026-11-20",
+        "valor_milhar": 15.6
       }
     ],
     "Smiles": [
@@ -3508,6 +3532,10 @@ window.PULSEMILHAS_DASHBOARD = {
       },
       {
         "data_captura": "2026-11-19",
+        "valor_milhar": 17.8
+      },
+      {
+        "data_captura": "2026-11-20",
         "valor_milhar": 17.8
       }
     ],
@@ -3992,8 +4020,12 @@ window.PULSEMILHAS_DASHBOARD = {
       {
         "data_captura": "2026-11-19",
         "valor_milhar": 30.0
+      },
+      {
+        "data_captura": "2026-11-20",
+        "valor_milhar": 30.0
       }
     ]
   },
-  "records_total": 2157
+  "records_total": 2175
 };
